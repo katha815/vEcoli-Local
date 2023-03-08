@@ -7,6 +7,7 @@ on average.
 import argparse
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
+import os
 import pandas as pd
 import pickle
 from tqdm import tqdm
@@ -16,7 +17,8 @@ from tqdm import tqdm
 # (https://ecocyc.org/ECOLI/NEW-IMAGE?type=ECOCYC-CLASS&object=GO:0046677).
 # ompF and ompC (porins) were also included in this txt file even though they
 # were not listed on EcoCyc.
-RESPONSE_GENES_PATH = 'data/subgen_gene_plots/antibiotic_response_genes.txt'
+RESPONSE_GENES_PATH = 'ecoli/analysis/antibiotics_colony/subgen_gene_plots/'+ \
+    'antibiotic_response_genes.txt'
 # rnas.tsv file is from the release version of wcEcoli
 RNAS_TSV_PATH = 'reconstruction/ecoli/flat/rnas.tsv'
 SIM_DATA_PATH = 'reconstruction/sim_data/kb/simData.cPickle'
@@ -93,7 +95,8 @@ if __name__ == '__main__':
             time_dfs = list(tqdm(executor.map(convert_dict_to_df, data.items()),
                 total=len(data)))
         data = pd.concat(time_dfs)
-        data.to_pickle(f'data/glc_10000_expressome_df.pkl')
+        os.makedirs('data/colony_data/', exist_ok=True)
+        data.to_csv(f'data/colony_data/glc_10000_expressome_df.csv')
     else:
         data = pd.read_csv(args.data, dtype={'Agent ID': str}, index_col=0)
     count_antibiotic_subgen(data)
