@@ -16,7 +16,7 @@ def get_new_gene_ids_and_indices(
     Returns:
         4-element tuple containing
 
-        - **new_gene_cistron_ids**: names of new gene cistrons
+        - **new_gene_cistron_ids**: names of new gene cistrons 顺反子
         - **new_gene_indices**: indices in rna_data table for new gene cistrons
         - **new_monomer_ids**: names of new gene monomers
         - **new_monomer_indices**: indices in monomer_data table for new monomers
