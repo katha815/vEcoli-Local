@@ -2,6 +2,10 @@
 ==================================
 Metabolism using user-friendly FBA
 ==================================
+
+github.io: Replaces the default metabolism process (Metabolism) with experimental alternatives
+(e.g. MetabolismReduxClassic). Makes use of the *object-oriented interface for sim configuration
+mentioned in Configuration (e.g. sim.max_duration = 100).
 """
 
 import argparse

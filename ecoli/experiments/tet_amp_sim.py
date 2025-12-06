@@ -12,6 +12,12 @@ from ecoli.library.sim_data import LoadSimData
 
 AVOGADRO = constants.N_A / units.mol
 
+"""github.io: Modifies the initial state to add new bulk molecules (see Bulk Molecules) for 
+antibiotics-related molecules and adds two transcription factor binding sites to all promoters 
+for MarA and MarR. 
+Also adds command-line options for external concentration of tetracycline and ampicillin.
+"""
+
 
 def run_sim(
     tet_conc=0,
