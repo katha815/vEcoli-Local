@@ -1,0 +1,25 @@
+{
+    "experiment_id": "gene_knockout_test",
+    "sim_data_path": "out/all_media_conditions/parca/kb/simData.cPickle",
+    "suffix_time": false,
+    "parca_options": {
+        "cpus": 16
+    },
+    "generations": 1,
+    "n_init_sims": 1,
+    "single_daughters": true,
+    "emitter": "parquet",
+    "emitter_arg": {
+        "out_dir": "out"
+    },
+    "variants": {
+        "gene_knockout": {
+            "genes_to_knockout": {
+                "value":[
+                    ["EG10527_RNA"],
+                    ["EG10528_RNA"]
+                ]
+            }
+        }
+    }
+}

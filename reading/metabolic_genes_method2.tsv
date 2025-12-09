@@ -1,0 +1,11 @@
+id	symbol	synonyms	left_end_pos	right_end_pos	direction	rna_ids	is_metabolic
+EG10013	mepM	"[""mepM"", ""yebA"", ""b1856"", ""ECK1857""]"	1940313.0	1941635.0	-	"[""EG10013_RNA""]"	True
+EG10014	acrD	"[""acrD"", ""yffA"", ""b2470"", ""ECK2465""]"	2587595.0	2590708.0	+	"[""EG10014_RNA""]"	False
+EG10015	rodZ	"[""rodZ"", ""yfgA"", ""b2516"", ""ECK2512""]"	2641831.0	2642844.0	-	"[""EG10015_RNA""]"	False
+EG10016	garL	"[""garL"", ""yhaF"", ""b3126"", ""ECK3114""]"	3272787.0	3273557.0	-	"[""EG10016_RNA""]"	False
+EG10017	ispB	"[""ispB"", ""cel"", ""yhbD"", ""b3187"", ""ECK3176""]"	3333710.0	3334681.0	+	"[""EG10017_RNA""]"	False
+EG10018	csrD	"[""csrD"", ""yhdA"", ""b3252"", ""ECK3240""]"	3401392.0	3403332.0	-	"[""EG10018_RNA""]"	False
+EG10020	cpxR	"[""cpxR"", ""yiiA"", ""b3912"", ""ECK3905""]"	4104972.0	4105670.0	-	"[""EG10020_RNA""]"	False
+EG10021	yjiA	"[""yjiA"", ""b4352"", ""ECK4342""]"	4587909.0	4588865.0	-	"[""EG10021_RNA""]"	True
+EG10022	aceA	"[""aceA"", ""icl"", ""b4015"", ""ECK4007""]"	4217109.0	4218413.0	+	"[""EG10022_RNA""]"	False
+EG10023	aceB	"[""aceB"", ""mas"", ""b4014"", ""ECK4006""]"	4215478.0	4217079.0	+	"[""EG10023_RNA""]"	True

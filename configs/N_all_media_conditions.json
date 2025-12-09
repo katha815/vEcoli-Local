@@ -1,13 +1,13 @@
 {
-    "experiment_id": "all_media_conditions",
-    "sim_data_path": null,
+    "experiment_id": "all_media_conditions1",
+    "sim_data_path": "out/all_media_conditions/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
         "cpus": 16
     },
     "lineage_seed": 0,
     "generations": 8,
-    "n_init_sims": 2,
+    "n_init_sims": 1,
     "single_daughters": true,
     "emitter": "parquet",
     "emitter_arg": {
@@ -16,13 +16,13 @@
     "variants": {
         "condition": {
             "condition": {
-                "value": ["basal", "with_aa", "acetate", "succinate", "no_oxygen"]
+                "value": ["with_aa", "acetate", "succinate", "no_oxygen"]
             }
         }
     },
     "analysis_options": {
         "multivariant": {
-            "doubling_time_hist": {},
+            "doubling_time_hist": {"skip_n_gens": 0},
             "doubling_time_line": {}
         }
     }
