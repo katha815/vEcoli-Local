@@ -3,83 +3,106 @@ import numpy as np
 import matplotlib.pyplot as plt
 import json
 import glob
+import argparse
 
 
-def plot_multi_generation_data(
-    generations=range(1, 8),
-    read_interval_sec=10,
+def plot_growth_data_general(
+    generation=range(1, 8),
+    project_folder="gene_knockout_test",
+    variant_key="gene_knockout",
+    read_interval_sec=None,
     show_legend=True,
-    project_folder="all_media_conditions1",
-    save_path="/user/home/il22158/work/vEcoli/reading/results/",
-    figsize=(14, 4),
+    figsize=(14, 8),
 ):
     """
-    Plot growth rate and dry mass for all variants across multiple generations with continuous timeline.
+    Plot growth rate and dry mass for all variants across single or multiple generations.
 
     Parameters:
     -----------
-    generations : list or range
-        Generation numbers to analyze (e.g., range(1,9) or [1,3,5,8])
-    align_time : bool align_time=True,
-        If True, create seamless continuous timeline (gen1: 0-2000s, gen2: 2000-4000s, etc.)
-        If False, use absolute timestamps from experiment start
-    read_interval_sec : int
-        Read only one data point every N seconds from parquet files (default 10 for memory efficiency)
-        Set to 1 to read all data points
+    generation : int or list/range
+        Single generation number (e.g., 1) or multiple generations (e.g., range(1,8) or [1,3,5])
+    project_folder : str
+        Path to the project output folder
+    variant_key : str
+        Key in metadata to look for variant information (e.g., "gene_knockout", "condition")
+    read_interval_sec : int or None
+        If specified, take only one data point every N seconds to reduce data density
+        If None, plot all data points
     show_legend : bool
         Whether to show legend on plots
-    show_generation_markers : bool
-        If True, add vertical lines to mark generation boundaries
     figsize : tuple
         Figure size (width, height)
 
     Returns:
     --------
-    all_data : dict
-        Nested dictionary: {variant_id: {'condition': str, 'time': array, 'growth_rate': array,
-                                         'dry_mass': array}
+    all_variants : dict
+        Dictionary containing data for all variants
     """
+
+    # Convert single generation to list
+    if isinstance(generation, int):
+        gen_list = [generation]
+    else:
+        gen_list = list(generation)
 
     # Load condition metadata
     metadata_file = f"/user/home/il22158/work/vEcoli/out/{project_folder}/variant_sim_data/metadata.json"
     with open(metadata_file, "r") as f:
-        condition_metadata = json.load(f)
+        metadata = json.load(f)
 
-    # Convert generations to list if it's a range
-    gen_list = list(generations)
+    # Get the variant metadata dictionary
+    if variant_key in metadata:
+        variant_metadata = metadata[variant_key]
+    else:
+        print(
+            f"Warning: '{variant_key}' not found in metadata. Available keys: {list(metadata.keys())}"
+        )
+        variant_metadata = {}
 
     print(f"Loading generations: {gen_list}")
-    print(f"Downsampling: every {read_interval_sec} seconds")
-    # print(f"Timeline mode: {'Continuous' if align_time else 'Absolute'}\n")
+    if read_interval_sec:
+        print(f"Downsampling: every {read_interval_sec} seconds\n")
+
+    # Get all variant IDs
+    variant_ids = sorted([int(k) for k in variant_metadata.keys()])
 
     # Initialize storage for all variants
-    all_data = {}
+    all_variants = {}
 
-    # Loop through variants (outer loop to maintain color consistency)
-    for variant_id in range(5):
-        # Get condition name from metadata
+    # Loop through variants
+    for variant_id in variant_ids:
+        # Get label from metadata
         variant_str = str(variant_id)
-        if variant_str in condition_metadata["condition"]:
-            condition_info = condition_metadata["condition"][variant_str]
-            if isinstance(condition_info, dict) and "condition" in condition_info:
-                condition_name = condition_info["condition"]
-            elif isinstance(condition_info, str):
-                condition_name = condition_info
+        if variant_str in variant_metadata:
+            variant_info = variant_metadata[variant_str]
+
+            # Convert to label string
+            if isinstance(variant_info, str):
+                label = variant_info
+            elif isinstance(variant_info, dict):
+                if "genes_to_knockout" in variant_info:
+                    genes = variant_info["genes_to_knockout"]
+                    if genes:
+                        label = f"KO: {', '.join(genes)}"
+                    else:
+                        label = "No knockout"
+                elif "condition" in variant_info:
+                    label = variant_info["condition"]
+                else:
+                    label = str(variant_info)
             else:
-                condition_name = f"variant_{variant_id}"
+                label = f"variant_{variant_id}"
         else:
-            condition_name = f"variant_{variant_id}"
+            label = f"variant_{variant_id}"
 
         print(f"{'=' * 60}")
-        print(f"Variant {variant_id}: {condition_name}")
+        print(f"Variant {variant_id}: {label}")
         print(f"{'=' * 60}")
 
         # Storage for this variant's data across generations
         variant_times = []
         variant_growth_rates = []
         variant_dry_masses = []
-        # generation_boundaries = []
-        # time_offset = 0  # For continuous timeline
 
         # Loop through generations for this variant
         for gen in gen_list:
@@ -106,7 +129,7 @@ def plot_multi_generation_data(
                 total_rows_before += len(df_temp)
 
                 # Downsample during reading
-                if read_interval_sec > 1:
+                if read_interval_sec and read_interval_sec > 1:
                     df_temp = df_temp.iloc[::read_interval_sec]
 
                 total_rows_after += len(df_temp)
@@ -120,7 +143,7 @@ def plot_multi_generation_data(
                 f"  ✓ Gen {gen}: {len(pq_files)} files, {total_rows_after} points (from {total_rows_before})"
             )
 
-            # Store data
+            # Store data (using absolute time)
             variant_times.append(df_gen["time"].values)
             variant_growth_rates.append(
                 df_gen["listeners__mass__instantaneous_growth_rate"].values
@@ -129,31 +152,30 @@ def plot_multi_generation_data(
 
         # Concatenate all generations for this variant
         if len(variant_times) > 0:
-            all_data[variant_id] = {
-                "condition": condition_name,
+            all_variants[variant_id] = {
+                "label": label,
                 "time": np.concatenate(variant_times),
                 "growth_rate": np.concatenate(variant_growth_rates),
                 "dry_mass": np.concatenate(variant_dry_masses),
             }
             print(
-                f"  → Total: {len(all_data[variant_id]['time'])} points across {len(gen_list)} generations\n"
+                f"  → Total: {len(all_variants[variant_id]['time'])} points across {len(gen_list)} generation(s)\n"
             )
 
-    # Create plots
+    # Plot all variants
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=figsize)
 
-    colors = ["steelblue", "coral", "green", "purple", "orange"]
+    colors = plt.cm.tab10(np.linspace(0, 1, len(all_variants)))
 
-    # Plot all variants
-    for variant_id, data in all_data.items():
-        label = data["condition"]
+    for idx, (variant_id, data) in enumerate(all_variants.items()):
+        label = data["label"]
 
         # Growth rate
         ax1.plot(
             data["time"],
             data["growth_rate"],
             linewidth=1.5,
-            color=colors[variant_id],
+            color=colors[idx],
             alpha=0.8,
             label=label,
         )
@@ -163,56 +185,55 @@ def plot_multi_generation_data(
             data["time"],
             data["dry_mass"],
             linewidth=1.5,
-            color=colors[variant_id],
+            color=colors[idx],
             alpha=0.8,
             label=label,
         )
 
-        # # Add generation boundary markers (only once per variant to avoid legend clutter)
-        # if show_generation_markers and variant_id == 0:
-        #     for boundary in data['generation_boundaries']:
-        #         ax1.axvline(x=boundary, color='gray', linestyle='--', alpha=0.3, linewidth=1)
-        #         ax2.axvline(x=boundary, color='gray', linestyle='--', alpha=0.3, linewidth=1)
-
     # Format plots
-    # time_mode = "Continuous Timeline" if align_time else "Absolute Time"
     gen_str = (
         f"Generations {min(gen_list)}-{max(gen_list)}"
         if len(gen_list) > 1
         else f"Generation {gen_list[0]}"
     )
+    downsample_str = (
+        f" (sampled every {read_interval_sec}s)" if read_interval_sec else ""
+    )
 
-    ax1.set_xlabel("Time (s), sampled every {read_interval_sec}s", fontsize=12)
+    ax1.set_xlabel("Time (s)", fontsize=12)
     ax1.set_ylabel("Growth rate (/s)", fontsize=12)
-    # ax1.set_title(f'Instantaneous Growth Rate - {gen_str}, sampled every {read_interval_sec}s)',
-    #               fontsize=14, fontweight='bold')
+    ax1.set_title(
+        f"Instantaneous Growth Rate - {gen_str}{downsample_str}",
+        fontsize=14,
+        fontweight="bold",
+    )
     if show_legend:
         ax1.legend(loc="best", fontsize=10)
     ax1.grid(True, alpha=0.3)
 
-    ax2.set_xlabel("Time (s), sampled every {read_interval_sec}s", fontsize=12)
+    ax2.set_xlabel("Time (s)", fontsize=12)
     ax2.set_ylabel("Dry mass (fg)", fontsize=12)
-    # ax2.set_title(f'Dry Mass - {gen_str}, sampled every {read_interval_sec}s)',
-    #               fontsize=14, fontweight='bold')
+    ax2.set_title(
+        f"Dry Mass - {gen_str}{downsample_str}", fontsize=14, fontweight="bold"
+    )
     if show_legend:
         ax2.legend(loc="best", fontsize=10)
     ax2.grid(True, alpha=0.3)
 
+    save_path = "/user/home/il22158/work/vEcoli/reading/results/"
+
     plt.tight_layout()
-    plt.show()
-    plt.savefig(
-        f"{save_path}{project_folder}_multi_gen_plot_{min(gen_list)}_{max(gen_list)}_every{read_interval_sec}s.png",
-        dpi=300,
-    )
+    plt.savefig(f"{save_path}{project_folder}_{gen_str.replace(' ', '_')}_growth.png")
+    plt.close()
 
     # Print statistics
     print(f"\n{'=' * 60}")
     print(f"Summary Statistics - {gen_str}")
     print(f"{'=' * 60}")
 
-    for variant_id, data in all_data.items():
-        condition = data["condition"]
-        print(f"\n{condition}:")
+    for variant_id, data in all_variants.items():
+        label = data["label"]
+        print(f"\n{label} (variant {variant_id}):")
         print(
             f"  Total duration: {data['time'][-1] - data['time'][0]:.0f} s ({(data['time'][-1] - data['time'][0]) / 60:.1f} min)"
         )
@@ -225,8 +246,51 @@ def plot_multi_generation_data(
             f"  Dry mass: {data['dry_mass'][0]:.1f} → {data['dry_mass'][-1]:.1f} fg ({data['dry_mass'][-1] / data['dry_mass'][0]:.2f}x)"
         )
 
-    return all_data
+    return all_variants
 
 
-# Plot all 8 generations with continuous timeline (default 10s sampling)
-data_all = plot_multi_generation_data(generations=range(1, 8))
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Plot vEcoli growth data")
+    parser.add_argument("--generation", "-g", type=int, nargs="+", default=[1])
+    parser.add_argument(
+        "--project_folder", "-p", type=str, default="gene_knockout_test"
+    )
+    parser.add_argument("--variant_key", "-v", type=str, default="gene_knockout")
+    parser.add_argument("--read_interval_sec", "-i", type=int, default=20)
+    parser.add_argument("--no_legend", action="store_true")
+    parser.add_argument("--figsize", type=int, nargs=2, default=[14, 8])
+
+    args = parser.parse_args()
+
+    generation = (
+        args.generation[0]
+        if len(args.generation) == 1
+        else (
+            range(args.generation[0], args.generation[1])
+            if len(args.generation) == 2
+            else args.generation
+        )
+    )
+
+    plot_growth_data_general(
+        generation=generation,
+        project_folder=args.project_folder,
+        variant_key=args.variant_key,
+        read_interval_sec=args.read_interval_sec,
+        show_legend=not args.no_legend,
+        figsize=tuple(args.figsize),
+    )
+
+# Example usage:
+
+# Single generation
+# data = plot_growth_data_general(generation=1, project_folder="gene_knockout_test",
+#                                 variant_key="gene_knockout", read_interval_sec=10)
+
+# Multiple generations
+# data = plot_growth_data_general(generation=range(1, 9), project_folder="gene_knockout_metabolic",
+#                                 variant_key="gene_knockout", read_interval_sec=20)
+
+# Condition variants
+# data = plot_growth_data_general(generation=1, project_folder="gene_knockout_test3",
+#                                 variant_key="gene_knockout", read_interval_sec=20)

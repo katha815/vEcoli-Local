@@ -1,0 +1,3 @@
+gene_id,status,has_mrna,has_protein,max_mrna,max_protein
+EG10001,analyzed,True,True,4.0,3.0
+EG10002,analyzed,True,True,3.0,3.0
