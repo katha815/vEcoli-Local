@@ -1,0 +1,3 @@
+gene_id,variant,status,has_mrna,has_protein,max_mrna,max_protein,mean_mrna,mean_protein
+EG10001,0,analyzed,True,True,4.0,3.0,0.3652781327199932,0.4198398500724082
+EG10002,0,analyzed,True,True,3.0,3.0,0.49297214413493484,0.5079649033137406

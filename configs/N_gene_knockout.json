@@ -1,5 +1,5 @@
 {
-    "experiment_id": "gene_knockout_non_metabolic",
+    "experiment_id": "gene_knockout_non_metabolic1",
     "sim_data_path": "out/all_media_conditions/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
@@ -17,27 +17,27 @@
         "gene_knockout": {
             "genes_to_knockout": {
                 "value":[
-                ["G6371_RNA"],
-                ["G6268_RNA"],
-                ["G6585_RNA"],
-                ["G7679_RNA"],
-                ["G7038_RNA"],
-                ["EG11936_RNA"],
-                ["EG10439_RNA"],
-                ["EG11750_RNA"],
-                ["G6119_RNA"],
-                ["EG10603_RNA"],
-                ["EG30087_RNA"],
-                ["G0-8901_RNA"],
-                ["G6201_RNA"],
-                ["EG11815_RNA"],
-                ["G7317_RNA"],
-                ["EG10976_RNA"],
-                ["EG11270_RNA"],
-                ["EG10097_RNA"],
-                ["G6741_RNA"],
-                ["EG11444_RNA"]
-                ]
+                ["EG10001"],
+                ["EG10004"],
+                ["EG10011"],
+                ["EG10014"],
+                ["EG10015"],
+                ["EG10016"],
+                ["EG10017"],
+                ["EG10018"],
+                ["EG10026"],
+                ["EG10031"],
+                ["EG10033"],
+                ["EG10034"],
+                ["EG10035"],
+                ["EG10039"],
+                ["EG10040"],
+                ["EG10044"],
+                ["EG10046"],
+                ["EG10050"],
+                ["EG10051"],
+                ["EG10054"]
+                    ]
             }
         }
     }

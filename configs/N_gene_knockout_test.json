@@ -1,5 +1,5 @@
 {
-    "experiment_id": "gene_knockout_test",
+    "experiment_id": "gene_knockout_test3",
     "sim_data_path": "out/all_media_conditions/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
@@ -16,8 +16,8 @@
         "gene_knockout": {
             "genes_to_knockout": {
                 "value":[
-                    ["EG10527_RNA"],
-                    ["EG10528_RNA"]
+                    ["EG10367"],
+                    ["EG50003"]
                 ]
             }
         }

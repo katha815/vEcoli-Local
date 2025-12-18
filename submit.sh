@@ -1,15 +1,15 @@
 #!/bin/bash
-#SBATCH --job-name=multi_gen_plot
+#SBATCH --job-name=gene_screen3
 #SBATCH --partition=compute
-#SBATCH --time=3-00:00:00
+#SBATCH --time=1-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/multi_gen_plot.%j.out
-#SBATCH --mem=100G
-#SBATCH --cpus-per-task=16
+#SBATCH --output=slurm_logs/gene_screen3.%j.out
+#SBATCH --mem=120G
+#SBATCH --cpus-per-task=24
 
 cd /user/work/il22158/vEcoli
 source .venv/bin/activate
-echo "Running mutli-generation plot..."
-# python runscripts/workflow.py --config configs/N_gene_knockout.json
-python /user/home/il22158/work/vEcoli/reading/multi_gen_plot.py
+echo "Running gene screen across non_metabolic knockout variants..."
+cd reading
+python gene_screen.py --project gene_knockout_non_metabolic1 --variants $(seq 1 20)

@@ -1,0 +1,9 @@
+label,variant,generation,duration_s,mRNA_initial,mRNA_final,mRNA_change_pct,protein_initial,protein_final,protein_change_pct,total_tl_initiations,total_tc_initiations
+V4_G1,4,1,2520.0,0,1,100.0,1,0,-100.0,0,3
+V4_G2,4,2,1070.0,1,0,-100.0,0,0,0.0,0,1
+V4_G3,4,3,2510.0,1,4,300.0,0,0,0.0,0,3
+V4_G4,4,4,3250.0,2,0,-100.0,1,1,0.0,0,1
+V4_G5,4,5,4020.0,0,1,100.0,0,0,0.0,0,2
+V4_G6,4,6,3530.0,1,0,-100.0,0,0,0.0,0,1
+V4_G7,4,7,5060.0,0,0,0.0,0,1,100.0,0,1
+V4_G8,4,8,5200.0,0,0,0.0,1,1,0.0,0,0

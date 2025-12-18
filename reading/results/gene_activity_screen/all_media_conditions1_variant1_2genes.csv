@@ -1,0 +1,3 @@
+gene_id,variant,status,all_transcription_success,all_translation_success,max_mrna,max_protein,mean_mrna,mean_protein
+EG10003,1,analyzed,5,0,3.0,573.0,0.45114213197969544,318.88832487309645
+EG10030,1,analyzed,1,0,3.0,838.0,0.24048223350253808,252.85152284263958
