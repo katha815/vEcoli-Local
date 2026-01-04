@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
 """
+# To-dos
+1. Add manual conversion (for names bettween monomers and complexes) according to functionalUnits.py
+2. Skip first few time steps for 1st generation according to functionalUnits.py
+3. After change, check if outputs of functional genes scale matches with early Ioana's study (1219)
+
+# functional_gene_analysis.py
 Functional Gene Analysis for vEcoli Simulations
 
 Calculates minimum functional units for protein complexes across simulation data.
@@ -8,7 +14,7 @@ Calculates minimum functional units for protein complexes across simulation data
 load_sim_data(project_folder)
 
 Loads simulation data object containing all molecular definitions
-Path: out/{project}/kb/simData_Modified.cPickle
+Path: ~/work/vEcoli/out/{project_folder}/variant_sim_data/0.cPickle
 load_bulk_data(project_folder, variant, generations, downsample)
 
 Loads protein/molecule counts from parquet files across all generations

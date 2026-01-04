@@ -1,0 +1,9 @@
+label,variant,generation,duration_s,mRNA_initial,mRNA_final,mRNA_change_pct,protein_initial,protein_final,protein_change_pct,total_tl_initiations,total_tc_initiations
+V17_G1,17,1,2528.0,0,0,0.0,1,1,0.0,0,10
+V17_G2,17,2,2848.0,0,0,0.0,0,0,0.0,0,19
+V17_G3,17,3,2729.0,0,0,0.0,0,1,100.0,0,16
+V17_G4,17,4,2839.0,0,0,0.0,0,0,0.0,0,15
+V17_G5,17,5,3140.0,0,0,0.0,0,0,0.0,0,9
+V17_G6,17,6,3197.0,0,1,100.0,0,1,100.0,0,12
+V17_G7,17,7,3139.0,1,1,0.0,1,0,-100.0,0,6
+V17_G8,17,8,3182.0,1,0,-100.0,0,1,100.0,0,11

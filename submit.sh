@@ -10,6 +10,6 @@
 
 cd /user/work/il22158/vEcoli
 source .venv/bin/activate
-echo "Running gene screen across non_metabolic knockout variants..."
+echo "Running TDI plot betweenmedia conditions..."
 cd reading
-python gene_screen.py --project gene_knockout_non_metabolic1 --variants $(seq 1 20)
+python tdi_plot.py

@@ -263,7 +263,7 @@ def main():
         project=args.project,
         variants=args.variants,
         generations=args.generations,
-        output_dir="/user/home/il22158/work/vEcoli/reading/results/gene_activity_screen",
+        output_dir="/user/home/il22158/work/vEcoli/reading/results/gene_activity_screen1",
         downsample_sec=args.downsample_sec,
     )
 

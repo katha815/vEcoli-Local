@@ -1,0 +1,9 @@
+label,variant,generation,duration_s,mRNA_initial,mRNA_final,mRNA_change_pct,protein_initial,protein_final,protein_change_pct,total_tl_initiations,total_tc_initiations
+V15_G1,15,1,2528.0,0,0,0.0,1,1,0.0,43688,0
+V15_G2,15,2,2745.0,0,0,0.0,1,1,0.0,36256,0
+V15_G3,15,3,2726.0,0,0,0.0,0,0,0.0,33817,1
+V15_G4,15,4,3163.0,0,0,0.0,0,0,0.0,41711,0
+V15_G5,15,5,3050.0,0,0,0.0,0,0,0.0,37456,0
+V15_G6,15,6,2858.0,0,0,0.0,0,0,0.0,38753,0
+V15_G7,15,7,2863.0,0,0,0.0,0,0,0.0,35137,0
+V15_G8,15,8,3080.0,0,0,0.0,0,0,0.0,31618,0
