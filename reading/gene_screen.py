@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 """
+To-dos:
+1. Add an option so that the plot and individual gene dynamics are not saved, only the summary CSV.
+2. Create option to save time-series expression data for all genes
+3. Run it to seed100 simulation.
+4. Compare results with seed0 (original simulations).
+
+Description:
 Gene Activity Screen for vEcoli Simulations
 
 Screen gene activity (mRNA and protein expression) across multiple variants.
@@ -172,7 +179,7 @@ def main():
     # Test 50 genes
     python gene_screen.py --subset 50
     
-    # Test ALL 4747 genes
+    # Test ALL genes in gene-list
     python gene_screen.py --subset 0
         """,
     )
@@ -217,6 +224,13 @@ def main():
         type=int,
         default=10,
         help="Downsampling factor in seconds for gene_expression_trace (default: 10)",
+    )
+
+    parser.add_argument(
+        "--output-project",
+        type=str,
+        default="gene_activity_screen",
+        help="Output project name for results directory (default: gene_activity_screen)",
     )
     args = parser.parse_args()
 
@@ -263,7 +277,7 @@ def main():
         project=args.project,
         variants=args.variants,
         generations=args.generations,
-        output_dir="/user/home/il22158/work/vEcoli/reading/results/gene_activity_screen1",
+        output_dir=f"/user/home/il22158/work/vEcoli/reading/results/{args.output_project}",
         downsample_sec=args.downsample_sec,
     )
 

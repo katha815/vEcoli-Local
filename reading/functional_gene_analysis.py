@@ -4,28 +4,38 @@
 1. Add manual conversion (for names bettween monomers and complexes) according to functionalUnits.py
 2. Skip first few time steps for 1st generation according to functionalUnits.py
 3. After change, check if outputs of functional genes scale matches with early Ioana's study (1219)
+ -> True monomer num = 1637-1546 = 91
 
-# functional_gene_analysis.py
+# Understanding
+1. The functionalUNit.py could run for a different simulation in Ioana's study therefore the outcome
+differs.
+2. Searching from complex is not necessarily the only or the accurate way to find functioning genes.
+
+# Description
 Functional Gene Analysis for vEcoli Simulations
 
 Calculates minimum functional units for protein complexes across simulation data.
 
 *Core Functions*
-load_sim_data(project_folder)
+1. load_sim_data(project_folder)
 
 Loads simulation data object containing all molecular definitions
 Path: ~/work/vEcoli/out/{project_folder}/variant_sim_data/0.cPickle
-load_bulk_data(project_folder, variant, generations, downsample)
+
+2. load_bulk_data(project_folder, variant, generations, downsample)
 
 Loads protein/molecule counts from parquet files across all generations
 Extracts bulk molecule columns and downsamples timepoints
 Returns: bulk count arrays (generations × timepoints × molecules) + molecule IDs
-calculate_functional_units(sim_data, bulk_data, bulk_ids)
 
-Core algorithm: For each complex, calculates min(monomer_count / stoichiometry) across all subunits and timepoints
+3. calculate_functional_units(sim_data, bulk_data, bulk_ids)
+
+For each complex, calculates min(monomer_count / stoichiometry) across all subunits and timepoints
 Aggregates across 3 complexation processes: complexation, equilibrium, two_component_system
 Returns: monomer → min functional units mapping
-map_monomers_to_genes(sim_data)
+Note: it starts by iterating through complexes but outputs functional units for monomers.
+
+4. map_monomers_to_genes(sim_data)
 
 Builds monomer → gene ID mapping via cistron intermediate
 Uses transcription and translation data structures
@@ -40,14 +50,14 @@ Parameter	Default	Description
 --output	results/functional_gene/	Output directory
 
 *Output*
-CSV: gene_id, monomer_id, min_functional_units, num_complexes, is_functional
+CSV: gene_id, monomer_id, min/mean_functional_units, num_complexes, is_functional
 PNG: Histogram of functional units distribution
 
-*Algorithm*
+*Key Operations*
 For each complex:
   1. Get subunit stoichiometry (e.g., A₂B₃ means 2×A + 3×B)
-  2. For each timepoint: functional_units = metric(countₐ/2, countᵦ/3)
-  3. Take minimum across ALL timepoints/generations
+  2. For each timepoint: functional_units = min(countₐ/2, countᵦ/3)
+  3. Take minimum/mean across ALL timepoints/generations
 
 For each monomer:
   functional_units = max across all complexes it participates in
@@ -64,6 +74,19 @@ import matplotlib.pyplot as plt
 
 plt.rcParams["font.family"] = "DejaVu Sans"
 
+complexToMonomer = {
+    "CPLX0-7620[c]": "PD00260[c]",  # From wcEcoli repo: CPLX0-7620's monomer is EG10359-MONOMER, which is ID'ed as PD00260 (proteins.tsv)
+    "CPLX0-8801[c]": "G6420-MONOMER[c]",
+    "CPLX0-7677[c]": "EG11969-MONOMER[c]",
+    "CPLX0-7702[c]": "G6263-MONOMER[c]",
+    "CPLX0-7701[c]": "G6420-MONOMER[c]",
+}
+
+monomerToTranslationMonomer = {
+    "MONOMER0-1781[c]": "EG11519-MONOMER[c]",  # From wcEcoli repo: MONOMER0-1781 is a complex, EG11519 is its monomer
+    "EG10359-MONOMER[c]": "PD00260[c]",  # EG10359-MONOMER is not the ID of fur monomer, it's PD00260 (proteins.tsv)
+}
+
 
 def load_sim_data(project_folder, variant=0):
     """Load sim_data object"""
@@ -77,6 +100,7 @@ def load_bulk_data(project_folder, variant, generations, downsample=10):
     """Load bulk molecule counts from all generations"""
     bulk_data = {}
     bulk_ids = None
+    first_gen = generations[0]
 
     for gen in generations:
         agent_id = "0" * gen
@@ -104,7 +128,12 @@ def load_bulk_data(project_folder, variant, generations, downsample=10):
         )
 
         # Extract bulk counts using apply
-        bulk_counts = np.array([row for row in df["bulk"].values[::downsample]])
+        bulk_values = df["bulk"].values
+        if gen == first_gen:
+            # Modified: Skip first few time steps for 1st generation
+            bulk_values = bulk_values[5:]
+
+        bulk_counts = np.array([row for row in bulk_values[::downsample]])
         bulk_data[gen] = bulk_counts
         print(f"  Gen {gen}: {len(bulk_data[gen])} timepoints")
 
@@ -162,9 +191,15 @@ def calculate_functional_units(sim_data, bulk_data, bulk_ids, metric="mean"):
         valid_stoich = []
 
         for subunit_id, stoich in zip(subunit_ids, subunit_stoich):
+            original_subunit_id = subunit_id
+            if subunit_id in complexToMonomer:  # Modified
+                subunit_id = complexToMonomer[subunit_id]
+            if subunit_id in monomerToTranslationMonomer:  # Modified
+                subunit_id = monomerToTranslationMonomer[subunit_id]
+
             if subunit_id in bulk_id_to_idx:
                 subunit_indices.append(bulk_id_to_idx[subunit_id])
-                valid_subunits.append(subunit_id)
+                valid_subunits.append(original_subunit_id)
                 valid_stoich.append(stoich)
 
         if not subunit_indices:
@@ -176,6 +211,9 @@ def calculate_functional_units(sim_data, bulk_data, bulk_ids, metric="mean"):
             for timestep_counts in counts:
                 subunit_counts = timestep_counts[subunit_indices]
                 functional_units = np.min(subunit_counts / np.array(valid_stoich))
+                # Why MIN operator?
+                # It complies limiting reagent principle (minimum ratio
+                # across all subunits determins the num of formed complex).
                 all_functional_units.append(functional_units)
 
         # Apply aggregation metric (across timepoints)
@@ -192,6 +230,10 @@ def calculate_functional_units(sim_data, bulk_data, bulk_ids, metric="mean"):
             monomer_functional_units[subunit_id] = max(
                 monomer_functional_units[subunit_id], aggregate_functional
             )
+            # Why MAX operator?
+            # Because a single monomer can participate in multiple different
+            # complexes, and we want to know if the monomer is functional
+            # in ANY of them.
 
     print(f"Analyzed {len(monomer_functional_units)} monomers")
     return dict(monomer_functional_units), dict(monomer_to_complexes)
@@ -202,13 +244,13 @@ def map_monomers_to_genes(sim_data):
 
     Pattern: monomer_id -> cistron_id -> gene_id
 
-    No corresponding genes reasons?
+    Q: No corresponding genes reasons?
         Some "monomers" in the complexation system are actually:
             Not real monomers (metabolites, complexes)
             Alternative products from same gene (frameshifts)
             Pseudogene products (no active gene)
 
-    Only 1561 genes code for proteins that participate in complexes (out of 4747)?
+    Q: Only 1561 genes code for proteins that participate in complexes (out of 4747)?
         ~3200 genes code for proteins that either:
             Work as monomers (not forming complexes)
             Encode RNAs (rRNA, tRNA, sRNA)
