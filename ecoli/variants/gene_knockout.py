@@ -8,8 +8,20 @@ def apply_variant(
     sim_data: "SimulationDataEcoli", params: dict[str, Any]
 ) -> "SimulationDataEcoli":
     """
-    Knockout genes by setting their transcription unit's synthesis probability to 0.
-    Note: This knocks out the entire operon containing the gene.
+        Knockout genes by setting their transcription unit's synthesis probability to 0.
+        Note: This knocks out the entire operon containing the gene.
+    Backgorund info:
+    genetic_perturbations is simply a dictionary attribute on sim_data, not a function.
+    It's used as a data structure to specify which RNA transcripts should have their synthesis probabilities overridden.
+
+    1. Set by variant modules (e.g., tf_activity.py:49-52): Creates a dictionary mapping RNA IDs to fixed synthesis probabilities:
+
+    sim_data.genetic_perturbations = {}
+    sim_data.genetic_perturbations[rnaId] = <probability value>
+
+    2. Consumed by processes (e.g., transcript_initiation.py:55-67): Reads the dictionary and converts it to arrays of indices and
+    probabilities that are used to override the normal transcription initiation probabilities during simulation.
+
     """
     if not hasattr(sim_data, "genetic_perturbations"):
         sim_data.genetic_perturbations = {}
