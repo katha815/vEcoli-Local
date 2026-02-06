@@ -964,7 +964,8 @@ class ParquetEmitter(Emitter):
                     config_emit[k] = v[np.newaxis]
                     config_schema[k] = pl_dtype_from_ndarray(v)
                 except ValueError:
-                    v = pl.Series([v])
+                    # *Convert unsupported types (e.g. pint.Quantity) to string
+                    v = pl.Series([str(v)])  # Originally was pl.Series([v])
                     config_emit[k] = v
                     config_schema[k] = v.dtype
             outfile = os.path.join(

@@ -76,13 +76,31 @@ class NumpyRandomStateSerializer(Serializer):
             return False
         return bool(self.regex_for_serialized.fullmatch(data))
 
+    # def deserialize(self, data):
+    #     matched_regex = self.regex_for_serialized.fullmatch(data)
+    #     if matched_regex:
+    #         data = matched_regex.group(1)
+    #     data = orjson.loads(data)
+    #     rng = np.random.RandomState()
+    #     rng.set_state(data)
+    #     return rng
+
     def deserialize(self, data):
+        """*New deserialize that handles Python tuple format from serialize()."""
+        import ast
+
         matched_regex = self.regex_for_serialized.fullmatch(data)
         if matched_regex:
             data = matched_regex.group(1)
-        data = orjson.loads(data)
+        # Handle both JSON format [...] and Python tuple format (...)
+        # The serialize() method outputs Python tuple format, so we need
+        # ast.literal_eval() to parse it correctly
+        if data.startswith("("):
+            data = ast.literal_eval(data)
+        else:
+            data = orjson.loads(data)
         rng = np.random.RandomState()
-        rng.set_state(data)
+        rng.set_state(tuple(data))
         return rng
 
 
