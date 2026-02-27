@@ -452,6 +452,7 @@ def run_simulation(config):
     metadata.pop("initial_state", None)
     metadata["git_hash"] = get_git_revision_hash()
     metadata["git_diff"] = get_git_diff()
+    # metadata = serialize_value(metadata) # *Real fix: serialize metadata
 
     # Since unique numpy updater is an class method, internal
     # deepcopying in vivarium-core causes this warning to appear
@@ -475,6 +476,16 @@ def run_simulation(config):
         metadata=metadata,
         profile=config["profile"],
         initial_global_time=config.get("start_time", 0.0),
+        # --- Added options for full vivarium-core Engine compatibility ---
+        emit_topology=config.get("emit_topology", True),
+        emit_processes=config.get("emit_processes", False),
+        emit_step=config.get("emit_step", 1),  # *Downsampling factor
+        display_info=config.get("display_info", True),
+        global_time_precision=config.get("global_time_precision", None),
+        store_schema=config.get("store_schema", None),
+        description=config.get("description", ""),
+        experiment_name=config.get("experiment_name", None),
+        # --- End of added options ---
     )
     # Unnecessary reference to initial_state
     engine.initial_state = None

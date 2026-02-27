@@ -76,6 +76,12 @@ def json_to_parquet(
         filesystem: On local filesystem, fsspec filesystem needed to
             write Parquet file atomically.
     """
+    # === Debug for polars.exceptions.ShapeError ===
+    # *Remove columns with length 0 to avoid ShapeError
+    emit_dict = {k: v for k, v in emit_dict.items() if len(v) > 0}
+    if not emit_dict:
+        raise ValueError("No data to emit: all columns are empty.")
+    # === Debug for polars.exceptions.ShapeError ===
     tbl = pl.DataFrame(emit_dict, schema={k: schema[k] for k in emit_dict})
     # GCS should have atomic uploads, but on a local filesystem, DuckDB may fail
     # trying to read partially written Parquet files. Get around this by writing
@@ -965,7 +971,7 @@ class ParquetEmitter(Emitter):
                     config_schema[k] = pl_dtype_from_ndarray(v)
                 except ValueError:
                     # *Convert unsupported types (e.g. pint.Quantity) to string
-                    v = pl.Series([str(v)])  # Originally was pl.Series([v])
+                    v = pl.Series(v)  # Originally was pl.Series([v])
                     config_emit[k] = v
                     config_schema[k] = v.dtype
             outfile = os.path.join(

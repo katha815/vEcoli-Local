@@ -1,10 +1,10 @@
 {
     "experiment_id": "gene_ko_441imported_2seeds",
-    "sim_data_path": "out/all_media_conditions/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
         "cpus": 24
     },
+    "sim_data_path": "out/all_media_conditions1/parca/kb/simData.cPickle",
     "lineage_seed": 100,
     "generations": 8,
     "n_init_sims": 2,
@@ -13,6 +13,7 @@
     "emitter_arg": {
         "out_dir": "out"
     },
+    "emit_step": 20,
     "skip_baseline": true,
     "variants": {
         "gene_knockout": {

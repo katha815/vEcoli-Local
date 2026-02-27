@@ -1,10 +1,11 @@
 {
     "experiment_id": "gene_knockout_test3",
-    "sim_data_path": "out/all_media_conditions/parca/kb/simData.cPickle",
+    "sim_data_path": "out/all_media_conditions1/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
         "cpus": 16
     },
+    "emit_step": 20,
     "generations": 1,
     "n_init_sims": 1,
     "single_daughters": true,
@@ -16,8 +17,7 @@
         "gene_knockout": {
             "genes_to_knockout": {
                 "value":[
-                    ["EG10367"],
-                    ["EG50003"]
+                    ["EG10367"]
                 ]
             }
         }

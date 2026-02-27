@@ -49,6 +49,19 @@ def extract_growth_rate_data(
     --------
     df_growth : pd.DataFrame
         Summary statistics or full timeseries data
+
+    Output Parquet File:
+    --------------------
+    If save_timeseries is True, the function will output a parquet file containing the full downsampled timeseries for all variants and generations.
+    Each row in the parquet file will include the following columns:
+        - project (project folder name)
+        - variant (variant id)
+        - label (variant label, e.g., KO: gene name)
+        - time (simulation time)
+        - listeners__mass__instantaneous_growth_rate
+        - listeners__mass__dry_mass
+    The file will be saved to:
+        /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_{suffix}_{run_type}.parquet
     """
 
     # Convert generation to list
@@ -175,7 +188,15 @@ def extract_growth_rate_data(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Extract growth rate data from vEcoli simulations"
+        description="Extract growth rate data from vEcoli simulations.\n\n"
+        "By default, only summary statistics are saved as CSV.\n"
+        "Use --save-timeseries to also save the full downsampled timeseries for all variants and generations as a parquet file.\n"
+        "Example: python growth_rate_extract.py --all --projects gene_ko_trial40_seed101 --suffix seed101 --lineage-seed 101 --save-timeseries"
+    )
+    parser.add_argument(
+        "--save-timeseries",
+        action="store_true",
+        help="If set, save the full timeseries data to a parquet file. If not set, only summary statistics will be saved.",
     )
     parser.add_argument(
         "--all", action="store_true", help="Extract all variants, all 8 generations"
@@ -263,28 +284,73 @@ def main():
     output_dir = "/user/home/il22158/work/vEcoli/reading/results/growth_rate"
     os.makedirs(output_dir, exist_ok=True)
 
-    # Extract summary statistics
-    print("Extracting summary statistics...")
+    print("Extracting data...")
     all_summary = []
+    all_timeseries = []
     for proj in projects:
         df = extract_growth_rate_data(
             proj["folder"],
             proj["variant_key"],
             generation=generations,
             max_variants=max_variants,
-            save_timeseries=False,
+            save_timeseries=args.save_timeseries,
             lineage_seed=args.lineage_seed,
         )
         if len(df) > 0:
-            all_summary.append(df)
+            if args.save_timeseries:
+                # If timeseries, append to timeseries list
+                all_timeseries.append(df)
+            else:
+                # If summary, append to summary list
+                all_summary.append(df)
 
-    if not all_summary:
+    if args.save_timeseries:
+        if not all_timeseries:
+            print(
+                "\nERROR: No data was extracted from any project. Check project names and data paths."
+            )
+            return
+        df_timeseries = pd.concat(all_timeseries, ignore_index=True)
+        # Save timeseries
+        timeseries_file = f"{output_dir}/growth_rate_timeseries_{args.suffix}_{run_type.lower()}.parquet"
+        df_timeseries.to_parquet(timeseries_file, index=False)
         print(
-            "\nERROR: No data was extracted from any project. Check project names and data paths."
+            f"✓ Saved timeseries: {timeseries_file} ({len(df_timeseries)} timepoints)"
         )
-        return
-
-    df_summary = pd.concat(all_summary, ignore_index=True)
+        # Also create summary from timeseries
+        # Group by project and variant, calculate summary stats
+        summary_rows = []
+        for (project, variant), group in df_timeseries.groupby(["project", "variant"]):
+            growth_rate = group["listeners__mass__instantaneous_growth_rate"].values
+            dry_mass = group["listeners__mass__dry_mass"].values
+            time_vals = group["time"].values
+            label = group["label"].iloc[0]
+            summary_rows.append(
+                {
+                    "project": project,
+                    "variant": variant,
+                    "label": label,
+                    "mean_growth_rate": np.mean(growth_rate),
+                    "median_growth_rate": np.median(growth_rate),
+                    "std_growth_rate": np.std(growth_rate),
+                    "max_growth_rate": np.max(growth_rate),
+                    "initial_dry_mass": dry_mass[0],
+                    "final_dry_mass": dry_mass[-1],
+                    "max_dry_mass": np.max(dry_mass),
+                    "fold_change_mass": dry_mass[-1] / dry_mass[0],
+                    "duration_sec": time_vals[-1] - time_vals[0],
+                    "n_timepoints": len(group),
+                    "generations_used": len(generations),
+                }
+            )
+        df_summary = pd.DataFrame(summary_rows)
+    else:
+        if not all_summary:
+            print(
+                "\nERROR: No data was extracted from any project. Check project names and data paths."
+            )
+            return
+        df_summary = pd.concat(all_summary, ignore_index=True)
 
     # Print summary
     print()
@@ -303,32 +369,6 @@ def main():
     )
     df_summary.to_csv(summary_file, index=False)
     print(f"✓ Saved summary: {summary_file}")
-
-    # Extract full timeseries
-    print()
-    print("=" * 80)
-    print("Extracting full timeseries data...")
-    all_timeseries = []
-    for proj in projects:
-        df = extract_growth_rate_data(
-            proj["folder"],
-            proj["variant_key"],
-            generation=generations,
-            max_variants=max_variants,
-            save_timeseries=True,
-            lineage_seed=args.lineage_seed,
-        )
-        if len(df) > 0:
-            all_timeseries.append(df)
-
-    df_timeseries = pd.concat(all_timeseries, ignore_index=True)
-
-    # Save timeseries
-    timeseries_file = (
-        f"{output_dir}/growth_rate_timeseries_{args.suffix}_{run_type.lower()}.parquet"
-    )
-    df_timeseries.to_parquet(timeseries_file, index=False)
-    print(f"✓ Saved timeseries: {timeseries_file} ({len(df_timeseries)} timepoints)")
 
     # Print final statistics
     print()

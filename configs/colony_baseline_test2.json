@@ -7,6 +7,7 @@
     "sim_data_path": "out/all_media_conditions1/parca/kb/simData.cPickle",
     
     "emitter": "parquet",
+    "emit_step": 60,
     "emitter_arg": {
         "out_dir": "out/colony_runs/baseline_3rd_gen_seed_0"
     },

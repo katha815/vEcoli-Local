@@ -857,6 +857,10 @@ class EcoliSim:
             "emit_config": self.emit_config,
             "emitter": self.emitter_config,
             "initial_global_time": self.initial_global_time,
+            # *Experimental change for lower emission rate
+            # emit_step controls how often data is saved to history (in seconds)
+            # Higher values reduce disk usage without affecting simulation accuracy
+            "emit_step": self.config.get("emit_step", 1),
         }
         if self.experiment_id:
             # Store backup of base experiment ID,
