@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=downsample_history
+#SBATCH --job-name=gowth_r_441
 #SBATCH --partition=compute
-#SBATCH --time=14-00:00:00
+#SBATCH --time=3-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/colony_3gen_rerun.%j.out
-#SBATCH --mem=20G
+#SBATCH --output=slurm_logs/growth_rate_441.%j.out
+#SBATCH --mem=50G
 #SBATCH --cpus-per-task=10
 
 # === ENVIRONMENT SETUP ===
@@ -21,7 +21,7 @@ git checkout -  # Go back to previous branch
 
 # === JOB EXECUTION ===
 
-echo "Snapshot test for job ${SLURM_JOB_ID}"
+echo "Snapshot for job ${SLURM_JOB_ID}"
 
 # echo "Starting downsampling of history parquet files again to make it end in 1/20 size..."
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_non_metabolic_seed100/history --n 20 
@@ -31,8 +31,9 @@ echo "Snapshot test for job ${SLURM_JOB_ID}"
 # echo "Rerun 441 gene knockouts with downsampled time step..."
 # python runscripts/workflow.py --config configs/N_gene_ko_441imported_2seeds.json
 
-# echo "Extracting growth rates from extra seed for trial 40 kos..."
-# python reading/growth_rate_extract.py --all --projects gene_ko_trial40_seed101 --suffix seed101 --lineage-seed 101 --save-timeseries
+echo "Extracting growth rates from 441 single knockouts..."
+python reading/growth_rate_extract.py --all --projects gene_ko_441imported_2seeds --suffix 441_KOs_seed100 --lineage-seed 100 --save-timeseries
+python reading/growth_rate_extract.py --all --projects gene_ko_441imported_2seeds --suffix 441_KOs_seed101 --lineage-seed 101 --save-timeseries
 
 # echo "Performing functional gene analysis..."
 # python reading/functional_gene_analysis.py  
