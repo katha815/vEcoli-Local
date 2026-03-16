@@ -1,0 +1,5 @@
+agent_id,scope,path,raw_value,raw_value_type,value,is_inf
+000,boundary,boundary.volume,!units[1.2811945437588332 femtoliter],str,1.2811945437588332,False
+001,boundary,boundary.volume,!units[1.26611937146556 femtoliter],str,1.26611937146556,False
+010,boundary,boundary.volume,!units[1.2825724080392347 femtoliter],str,1.2825724080392347,False
+011,boundary,boundary.volume,!units[1.2901309270743542 femtoliter],str,1.2901309270743542,False
