@@ -17,7 +17,6 @@ SNAPSHOT_BRANCH="snapshots/job-${SLURM_JOB_ID}-$(date +%Y%m%d_%H%M%S)"
 git checkout -b "$SNAPSHOT_BRANCH"
 git add -A
 git commit -m "Snapshot for job ${SLURM_JOB_ID}" || true
-git checkout -  # Go back to previous branch
 
 # === JOB EXECUTION ===
 
