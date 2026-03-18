@@ -1,21 +1,25 @@
 {
     "inherit_from": ["spatial.json"],
-    "description": "Test: Extend the early simulation to 3 and 4 genreations, save final state for both",
-    "initial_colony_file": "baseline_2gen_seed_0_colony_t6000",
+    "description": "Test: Extend the early simulation to 4th generation, save final state",
+    "initial_colony_file": "baseline_3rd_gen_seed_0_colony_t3000",
 
     "seed": 0,
     "sim_data_path": "out/all_media_conditions1/parca/kb/simData.cPickle",
     
     "emitter": "timeseries",
-    "emitter_arg": {},
+    "emitter_arg": {
+    "out_dir": "out/colony_runs/baseline_4th_gen_seed_0"
+    },
+    "emit_config": false,
     
     "inner_emitter": "parquet",
-    work/vEcoli/configs/colony_baseline_3_4_gen.json
-    "max_duration": 6000,
     
+    "start_time": 9000,
+    "max_duration": 3000,
     "save": true,
-    "save_times": [6000],
-    "colony_save_prefix": "baseline_3_4gen",
+    "save_times": [3000],
+    
+    "colony_save_prefix": "baseline_4th_gen",
     
     "parallel": false,
     
