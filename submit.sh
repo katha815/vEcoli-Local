@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=colony_4_gen
+#SBATCH --job-name=single-cell_double_daughter
 #SBATCH --partition=compute
 #SBATCH --time=3-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/colony_4_gen.%j.out
-#SBATCH --mem=100G
-#SBATCH --cpus-per-task=24
+#SBATCH --output=slurm_logs/single-cell_double_daughter.%j.out
+#SBATCH --mem=50G
+#SBATCH --cpus-per-task=10
 
 # === ENVIRONMENT SETUP ===
 cd /user/work/il22158/vEcoli
@@ -41,9 +41,9 @@ echo "Snapshot for job ${SLURM_JOB_ID}"
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-# echo "Double daughter simulation inherited from all_media_conditions1..."
-# python runscripts/workflow.py --config configs/N_double_daugther_4gen.json
-# python runscripts/workflow.py --config configs/N_double_daugther_4gen_d1.json
+echo "Double daughter simulation inherited from all_media_conditions1..."
+python runscripts/workflow.py --config configs/N_double_daugther_4gen.json
+python runscripts/workflow.py --config configs/N_double_daugther_4gen_d1.json
 
 # echo "Extracting growth rates from 441 single knockouts..."
 # python reading/growth_rate_extract.py --all --projects gene_ko_441imported_2seeds --suffix 441_KOs_seed100 --lineage-seed 100 --save-timeseries
@@ -52,5 +52,5 @@ echo "Snapshot for job ${SLURM_JOB_ID}"
 # echo "Performing functional gene analysis..."
 # python reading/functional_gene_analysis.py  
 
-echo "Running colony simulation from 3rd to 4th generation..."
-python ecoli/experiments/ecoli_engine_process.py --config configs/colony_baseline_4_gen.json
+# echo "Running colony simulation from 6th to 8th generation..."
+# python ecoli/experiments/ecoli_engine_process.py --config configs/colony_baseline_5678_gen.json
