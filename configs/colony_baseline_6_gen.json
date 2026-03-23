@@ -1,0 +1,32 @@
+{
+    "inherit_from": ["spatial.json"],
+    "description": "Test: Extend the early simulation to 8th generation, save final states",
+    "initial_colony_file": "baseline_5th_to_8th_gen_seed_0_colony_t3000.json",
+
+    "seed": 0,
+    "sim_data_path": "out/all_media_conditions1/parca/kb/simData.cPickle",
+    
+    "emitter": "timeseries",
+    "emitter_arg": {
+    "out_dir": "out/colony_runs/baseline_6th_gen_seed_0"
+    },
+    "emit_config": false,
+    
+    "inner_emitter": "parquet",
+    
+    "start_time": 15000,
+    "max_duration": 3000,
+    "save": true,
+    "save_times": [3000],
+    
+    "colony_save_prefix": "baseline_6th_gen",
+    
+    "parallel": false,
+    
+    "engine_process_reports": [
+        ["boundary"],
+        ["bulk"],
+        ["listeners"],
+        ["environment", "exchange"]
+    ]
+}
