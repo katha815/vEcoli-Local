@@ -1,5 +1,5 @@
 {
-    "experiment_id": "gene_knockout_test3",
+    "experiment_id": "gene_knockout_test",
     "sim_data_path": "out/all_media_conditions1/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {

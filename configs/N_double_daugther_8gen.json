@@ -1,0 +1,24 @@
+{
+    "experiment_id": "double_daughter_3gen_seed1_d0_from_all_media_conditions1",
+    "sim_data_path": "out/all_media_conditions1/parca/kb/simData.cPickle",
+    "suffix_time": false,
+    "parca_options": {
+        "cpus": 24
+    },
+    "lineage_seed": 1,
+    "generations": 7,
+
+    "single_daughters": false,
+    "initial_state_file": "baseline_v0_seed0_gen1_daughter0",
+    "emitter": "parquet",
+    "emitter_arg": {
+        "out_dir": "out"
+    },
+    "emit_step": 20,
+    "analysis_options": {
+        "multivariant": {
+            "doubling_time_hist": {"skip_n_gens": 0},
+            "doubling_time_line": {}
+        }
+    }
+}
