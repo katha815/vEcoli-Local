@@ -1,0 +1,6 @@
+metric,value
+mean_nmi,
+median_nmi,3.384237459334215e-16
+top10_mean_nmi,0.19258988434864613
+frac_nmi_ge_0.1,0.0275
+frac_nmi_ge_0.2,0.0008333333333333334

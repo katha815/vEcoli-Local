@@ -1,6 +1,1 @@
-diff --git a/source-info/git_diff.txt b/source-info/git_diff.txt
-index de9bbfa1..e69de29b 100644
---- a/source-info/git_diff.txt
-+++ b/source-info/git_diff.txt
-@@ -1 +0,0 @@
--git unavailable on node; no diff captured
+git unavailable on node; no diff captured
