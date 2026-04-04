@@ -13,7 +13,11 @@ out/
 /out
 .idea/
 *.iml
+
+# Customised #
 data/
+reading/results/
+surrogate/results/
 
 # User files #
 ################
