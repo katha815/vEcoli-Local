@@ -1,7 +1,7 @@
 {
     "inherit_from": ["spatial.json"],
-    "description": "Test: Extend the early simulation to 8th generation, save final states",
-    "initial_colony_file": "baseline_5th_to_8th_gen_seed_0_colony_t3000.json",
+    "description": "Test: Rerun from 5th gen to 6th generation, save final states",
+    "initial_colony_file": "baseline_5th_to_8th_gen_seed_0_colony_t3000",
 
     "seed": 0,
     "sim_data_path": "out/all_media_conditions1/parca/kb/simData.cPickle",

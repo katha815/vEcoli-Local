@@ -1,67 +1,26 @@
 #!/bin/bash
-#SBATCH --job-name=preprocess_growth_rate
+#SBATCH --job-name=rerun_colony_5th_to_6th_gen
 #SBATCH --partition=compute
 #SBATCH --time=3-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/preprocess_growth_rate.%j.out
+#SBATCH --output=slurm_logs/rerun_colony_5th_to_6th_gen.%j.out
 #SBATCH --mem=100G
 #SBATCH --cpus-per-task=10
 
-set -euo pipefail
+# == Work directory setup ==
+WORK_DIR="/user/home/il22158/work/vEcoli"
+cd "$WORK_DIR" || exit
 
-# === ENVIRONMENT SETUP ===
-# REPO_ROOT=/user/work/il22158/vEcoli
-# cd "$REPO_ROOT"
-# source .venv/bin/activate
-
-# if command -v module >/dev/null 2>&1; then
-# 	module restore || true
-# 	if ! command -v java >/dev/null 2>&1; then
-# 		module load languages/java-sdk/22.0.2 || true
-# 	fi
-# fi
-
-# if ! command -v java >/dev/null 2>&1; then
-# 	echo "ERROR: java not found in batch environment PATH" >&2
-# 	exit 1
-# fi
-
-# if ! command -v nextflow >/dev/null 2>&1; then
-# 	echo "ERROR: nextflow not found in batch environment PATH" >&2
-# 	exit 1
-# fi
-
-# java -version
-# nextflow -version | head -n 2
-
-# # === VERSION CONTROL ===
+# === VERSION CONTROL ===
+# git add. #stages changes under the current directory 
 # SNAPSHOT_BRANCH="snapshots/job-${SLURM_JOB_ID}-$(date +%Y%m%d_%H%M%S)"
-# if command -v git >/dev/null 2>&1; then
-# 	# Keep snapshot feature, but avoid staging bulky runtime outputs.
-# 	git checkout -b "$SNAPSHOT_BRANCH"
-# 	git add -u
-# 	git add submit.sh configs runscripts 2>/dev/null || true
-# 	git reset -q -- out slurm_logs nextflow_temp source-info 2>/dev/null || true
-# 	if ! git diff --cached --quiet; then
-# 		git commit -m "Snapshot for job ${SLURM_JOB_ID}"
-# 	else
-# 		echo "No source/config changes to commit for snapshot"
-# 	fi
-# else
-# 	echo "git not found on this node; skipping snapshot branch/commit"
-# fi
-
-# # Metadata fallback for environments without git (required by simulation metadata)
- 
-# 	export IMAGE_GIT_HASH="nogit-job-${SLURM_JOB_ID}"
-# 	echo "git unavailable on node; no diff captured" > source-info/git_diff.txt
-# 	echo "git unavailable on node; no status captured" > source-info/git_status.txt
-# fi
-
-# # === JOB EXECUTION ===
-
+# git checkout -b "$SNAPSHOT_BRANCH"
+# git commit -m "Snapshot for job ${SLURM_JOB_ID}" || true
+# git checkout -  # Go back to previous branch
 # echo "Snapshot for job ${SLURM_JOB_ID}"
+
+# === JOB EXECUTION ===
 
 # echo "Starting downsampling of history parquet files again to make it end in 1/20 size..."
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_non_metabolic_seed100/history --n 20 
@@ -81,21 +40,21 @@ set -euo pipefail
 # echo "Running colony simulation from 5th to 6th generation..."
 # python ecoli/experiments/ecoli_engine_process.py --config configs/colony_baseline_6_gen.json
 
-echo "Preprocessing growth rate to fold change data (all parquet files)..."
-GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt
-KO100=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_441_KOs_seed100_all.parquet
-KO101=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_441_KOs_seed101_all.parquet
-S100=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_seed100_all.parquet
-S101=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_seed101_all.parquet
-DEF=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_default_all.parquet
+# echo "Preprocessing growth rate to fold change data (all parquet files)..."
+# GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt
+# KO100=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_441_KOs_seed100_all.parquet
+# KO101=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_441_KOs_seed101_all.parquet
+# S100=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_seed100_all.parquet
+# S101=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_seed101_all.parquet
+# DEF=/user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_default_all.parquet
 
-# 1. 441 KO files use *20 step conversion
-python surrogate/preprocess.py \
-	--mode batch \
-	--gene-list "${GENE_LIST}" \
-	--timeseries-files "${KO100}" "${KO101}" \
-	--step-scale 20 \
-	--output-prefix surrogate_preprocessed_ko441
+# # 1. 441 KO files use *20 step conversion
+# python surrogate/preprocess.py \
+# 	--mode batch \
+# 	--gene-list "${GENE_LIST}" \
+# 	--timeseries-files "${KO100}" "${KO101}" \
+# 	--step-scale 20 \
+# 	--output-prefix surrogate_preprocessed_ko441
 
 # 2. seed/default files include baseline and use step conversion 1
 # python surrogate/preprocess.py \
@@ -104,3 +63,31 @@ python surrogate/preprocess.py \
 # 	--timeseries-files "${S100}" "${S101}" "${DEF}" \
 # 	--step-scale 1 \
 # 	--output-prefix surrogate_preprocessed_seed_default
+
+echo "Gene screen for outliers..."
+set -e
+
+GENE_SCREEN="/user/home/il22158/work/vEcoli/reading/gene_screen.py"
+LIST_DIR="/user/home/il22158/work/vEcoli/surrogate/results/failure/outlier_gene_lists_by_project"
+COMMON_ARGS="--generations 1 2 3 4 5 6 7 8 --subset 0"
+
+# Format: project<TAB>lineage_seed<TAB>variants
+while IFS=$'\t' read -r project seed variants; do
+	[[ -z "$project" ]] && continue
+	gene_list="$LIST_DIR/outlier_genes_unique__${project}.txt"
+	output_project="outlier_translation_${project}_seed${seed}"
+
+	python3 "$GENE_SCREEN" \
+		--project "$project" \
+		--variants $variants \
+		--lineage-seed "$seed" \
+		$COMMON_ARGS \
+		--gene-list "$gene_list" \
+		--output-project "$output_project"
+done <<'EOF'
+gene_ko_441imported_2seeds	100	7 11 24 31 41 48 57 59 65 84 95 98 101 117 122 125 133 135 145 157 189 191 195 200 212 213 218 226 230 239 240 241 244 246 267 284 286 288 289 297 317 326 329 356 357 368 370 400 419 433 436
+gene_ko_441imported_2seeds	101	7 11 24 31 57 59 65 95 98 101 117 124 125 133 135 145 157 191 195 200 213 218 226 230 241 244 246 267 284 286 288 297 329 357 368 370 400 433 436
+gene_ko_metabolic_seed100	100	7
+gene_ko_non_metabolic_seed100	100	7
+gene_ko_trial40_seed101	101	7
+EOF

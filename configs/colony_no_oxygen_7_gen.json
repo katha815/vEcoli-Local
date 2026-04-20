@@ -1,0 +1,38 @@
+{
+    "inherit_from": ["spatial.json"],
+    "description": "Test:Run a 7-generation colony simulation under  no_oxygen, with save time estimated by single-cell simulations.",
+
+    "seed": 0,
+    "sim_data_path": "out/all_media_conditions1/parca/kb/simData.cPickle",
+    
+    "emitter": "timeseries",
+    "emitter_arg": {
+    "out_dir": "out/colony_runs/no_oxygen_1_to_7_gen_seed_0"
+    },
+    "emit_config": false,
+    
+    "inner_emitter": "parquet",
+    "skip_baseline": true,
+        "variants": {
+        "condition": {
+            "condition": {
+                "value": ["no_oxygen"]
+            }
+        }
+    },
+    "start_time": 0,
+    "max_duration": 27301,
+    "save": true,
+    "save_times": [3900, 7800, 11700, 15600, 19500, 23400, 27300],
+    
+    "colony_save_prefix": "no_oxygen_1_to_7_gen",
+    
+    "parallel": false,
+    
+    "engine_process_reports": [
+        ["boundary"],
+        ["bulk"],
+        ["listeners"],
+        ["environment", "exchange"]
+    ]
+}

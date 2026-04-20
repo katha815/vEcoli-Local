@@ -5,6 +5,9 @@ import pickle
 import glob
 import os
 
+# Avoid font warnings on systems without Arial.
+plt.rcParams["font.sans-serif"] = ["DejaVu Sans"]
+
 
 def save_results(
     results,
@@ -68,10 +71,11 @@ def track_knockout_dynamics(
     project_folder,
     variants,
     generations,
+    lineage_seed=0,
     figsize=(16, 10),
     plot=True,
     save=True,
-    downsample_sec=20,
+    downsample_sec=1,
 ):
     """Track mRNA and protein dynamics for a knocked-out gene.
     Parameters
@@ -129,7 +133,7 @@ def track_knockout_dynamics(
 
             try:
                 # Load config for bulk metadata (protein)
-                config_path = f"/user/home/il22158/work/vEcoli/out/{project_folder}/configuration/experiment_id={project_folder}/variant={variant}/lineage_seed=0/generation={generation}/agent_id={agent_id}/config.pq"
+                config_path = f"/user/home/il22158/work/vEcoli/out/{project_folder}/configuration/experiment_id={project_folder}/variant={variant}/lineage_seed={lineage_seed}/generation={generation}/agent_id={agent_id}/config.pq"
                 df_config = pd.read_parquet(config_path)
                 bulk_ids = df_config["output_metadata__bulk"].iloc[0]
                 if isinstance(bulk_ids, np.ndarray):
@@ -152,7 +156,7 @@ def track_knockout_dynamics(
                 tu_idx_mrna = mRNA_ids.index(tu_id) if tu_id in mRNA_ids else None
 
                 # Load history
-                history_path = f"/user/home/il22158/work/vEcoli/out/{project_folder}/history/experiment_id={project_folder}/variant={variant}/lineage_seed=0/generation={generation}/agent_id={agent_id}"
+                history_path = f"/user/home/il22158/work/vEcoli/out/{project_folder}/history/experiment_id={project_folder}/variant={variant}/lineage_seed={lineage_seed}/generation={generation}/agent_id={agent_id}"
                 pq_files = sorted(glob.glob(f"{history_path}/*.pq"))
 
                 if len(pq_files) == 0:
@@ -369,7 +373,9 @@ def track_knockout_dynamics(
             axes[plot_idx].grid(True, alpha=0.3)
             plot_idx += 1
 
-        axes[-1].set_xlabel("Time (seconds)", fontsize=12)
+        for ax in axes:
+            ax.set_xticks([])
+            ax.set_xlabel("Time")
         plt.tight_layout()
 
         if save:
@@ -424,7 +430,7 @@ Examples:
         "--downsample_sec",
         "-d",
         type=int,
-        default=20,
+        default=1,
     )
 
     parser.add_argument(
@@ -451,6 +457,12 @@ Examples:
         help="Generation(s) to analyze (default: 1 2 3)",
     )
     parser.add_argument(
+        "--lineage-seed",
+        type=int,
+        default=0,
+        help="Lineage seed to read from output paths (default: 0)",
+    )
+    parser.add_argument(
         "--figsize",
         "-f",
         nargs=2,
@@ -473,6 +485,7 @@ Examples:
     print(f"Project: {args.project}")
     print(f"Variants: {variants}")
     print(f"Generations: {generations}")
+    print(f"Lineage seed: {args.lineage_seed}")
     print(f"Figure size: {figsize}")
     print("-" * 80)
 
@@ -488,6 +501,7 @@ Examples:
         project_folder=args.project,
         variants=variants,
         generations=generations,
+        lineage_seed=args.lineage_seed,
         figsize=figsize,
     )
 

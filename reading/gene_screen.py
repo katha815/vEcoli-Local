@@ -25,7 +25,13 @@ from gene_expression_trace import track_knockout_dynamics
 
 
 def screen_gene_activity_multi_variant(
-    gene_list, project, variants, generations, output_dir, downsample_sec=20
+    gene_list,
+    project,
+    variants,
+    generations,
+    output_dir,
+    downsample_sec=1,  # data is already downsampled to reduce space
+    lineage_seed=0,
 ):
     """
     Screen gene activity across multiple variants. Saves separate CSV per variant.
@@ -52,6 +58,7 @@ def screen_gene_activity_multi_variant(
                     project_folder=project,
                     variants=[variant],
                     generations=generations,
+                    lineage_seed=lineage_seed,
                     figsize=(16, 10),
                     plot=True,
                     save=False,
@@ -222,8 +229,8 @@ def main():
         "--downsample_sec",
         "-d",
         type=int,
-        default=10,
-        help="Downsampling factor in seconds for gene_expression_trace (default: 10)",
+        default=1,
+        help="Downsampling factor in seconds for gene_expression_trace (default: 1, no downsampling)",
     )
 
     parser.add_argument(
@@ -231,6 +238,12 @@ def main():
         type=str,
         default="gene_activity_screen",
         help="Output project name for results directory (default: gene_activity_screen)",
+    )
+    parser.add_argument(
+        "--lineage-seed",
+        type=int,
+        default=0,
+        help="Lineage seed to read from output paths (default: 0)",
     )
     args = parser.parse_args()
 
@@ -279,6 +292,7 @@ def main():
         generations=args.generations,
         output_dir=f"/user/home/il22158/work/vEcoli/reading/results/{args.output_project}",
         downsample_sec=args.downsample_sec,
+        lineage_seed=args.lineage_seed,
     )
 
 

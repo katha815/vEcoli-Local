@@ -1,0 +1,2 @@
+n_current_genes,n_previous_genes,total_number_difference_abs,n_only_current,n_only_previous,current_mismatch_count,previous_mismatch_count,mismatch_difference_current_minus_previous,mismatch_difference_abs,prediction_disagreement_count_between_models
+462,462,0,0,0,94,101,-7,7,83
