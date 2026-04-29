@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=rerun_colony_5th_to_6th_gen
+#SBATCH --job-name=rerun_KO_10
 #SBATCH --partition=compute
 #SBATCH --time=3-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/rerun_colony_5th_to_6th_gen.%j.out
+#SBATCH --output=slurm_logs/rerun_KO_10.%j.out
 #SBATCH --mem=100G
 #SBATCH --cpus-per-task=10
 
@@ -27,8 +27,8 @@ cd "$WORK_DIR" || exit
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-# echo "Workflow testing..."
-# python runscripts/workflow.py --config configs/N_gene_knockout_test.json
+echo "Rerun single cell KOs with burn-in period..."
+python runscripts/workflow.py --config configs/N_gene_knockout.json
 
 # echo "Extracting growth rates from 441 single knockouts..."
 # python reading/growth_rate_extract.py --all --projects gene_ko_441imported_2seeds --suffix 441_KOs_seed100 --lineage-seed 100 --save-timeseries
@@ -64,30 +64,30 @@ cd "$WORK_DIR" || exit
 # 	--step-scale 1 \
 # 	--output-prefix surrogate_preprocessed_seed_default
 
-echo "Gene screen for outliers..."
-set -e
+# echo "Gene screen for outliers..."
+# set -e
 
-GENE_SCREEN="/user/home/il22158/work/vEcoli/reading/gene_screen.py"
-LIST_DIR="/user/home/il22158/work/vEcoli/surrogate/results/failure/outlier_gene_lists_by_project"
-COMMON_ARGS="--generations 1 2 3 4 5 6 7 8 --subset 0"
+# GENE_SCREEN="/user/home/il22158/work/vEcoli/reading/gene_screen.py"
+# LIST_DIR="/user/home/il22158/work/vEcoli/surrogate/results/failure/outlier_gene_lists_by_project"
+# COMMON_ARGS="--generations 1 2 3 4 5 6 7 8 --subset 0"
 
-# Format: project<TAB>lineage_seed<TAB>variants
-while IFS=$'\t' read -r project seed variants; do
-	[[ -z "$project" ]] && continue
-	gene_list="$LIST_DIR/outlier_genes_unique__${project}.txt"
-	output_project="outlier_translation_${project}_seed${seed}"
+# # Format: project<TAB>lineage_seed<TAB>variants
+# while IFS=$'\t' read -r project seed variants; do
+# 	[[ -z "$project" ]] && continue
+# 	gene_list="$LIST_DIR/outlier_genes_unique__${project}.txt"
+# 	output_project="outlier_translation_${project}_seed${seed}"
 
-	python3 "$GENE_SCREEN" \
-		--project "$project" \
-		--variants $variants \
-		--lineage-seed "$seed" \
-		$COMMON_ARGS \
-		--gene-list "$gene_list" \
-		--output-project "$output_project"
-done <<'EOF'
-gene_ko_441imported_2seeds	100	7 11 24 31 41 48 57 59 65 84 95 98 101 117 122 125 133 135 145 157 189 191 195 200 212 213 218 226 230 239 240 241 244 246 267 284 286 288 289 297 317 326 329 356 357 368 370 400 419 433 436
-gene_ko_441imported_2seeds	101	7 11 24 31 57 59 65 95 98 101 117 124 125 133 135 145 157 191 195 200 213 218 226 230 241 244 246 267 284 286 288 297 329 357 368 370 400 433 436
-gene_ko_metabolic_seed100	100	7
-gene_ko_non_metabolic_seed100	100	7
-gene_ko_trial40_seed101	101	7
-EOF
+# 	python3 "$GENE_SCREEN" \
+# 		--project "$project" \
+# 		--variants $variants \
+# 		--lineage-seed "$seed" \
+# 		$COMMON_ARGS \
+# 		--gene-list "$gene_list" \
+# 		--output-project "$output_project"
+# done <<'EOF'
+# gene_ko_441imported_2seeds	100	7 11 24 31 41 48 57 59 65 84 95 98 101 117 122 125 133 135 145 157 189 191 195 200 212 213 218 226 230 239 240 241 244 246 267 284 286 288 289 297 317 326 329 356 357 368 370 400 419 433 436
+# gene_ko_441imported_2seeds	101	7 11 24 31 57 59 65 95 98 101 117 124 125 133 135 145 157 191 195 200 213 218 226 230 241 244 246 267 284 286 288 297 329 357 368 370 400 433 436
+# gene_ko_metabolic_seed100	100	7
+# gene_ko_non_metabolic_seed100	100	7
+# gene_ko_trial40_seed101	101	7
+# EOF
