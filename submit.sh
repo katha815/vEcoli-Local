@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=rerun_KO_10
+#SBATCH --job-name=gene_KO_test
 #SBATCH --partition=compute
 #SBATCH --time=3-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/rerun_KO_10.%j.out
+#SBATCH --output=slurm_logs/gene_KO_test.%j.out
 #SBATCH --mem=100G
 #SBATCH --cpus-per-task=10
 
@@ -27,8 +27,8 @@ cd "$WORK_DIR" || exit
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-echo "Rerun single cell KOs with burn-in period..."
-python runscripts/workflow.py --config configs/N_gene_knockout.json
+echo "Run gene knockout test..."
+python runscripts/workflow.py --config configs/N_gene_knockout_test.json
 
 # echo "Extracting growth rates from 441 single knockouts..."
 # python reading/growth_rate_extract.py --all --projects gene_ko_441imported_2seeds --suffix 441_KOs_seed100 --lineage-seed 100 --save-timeseries
