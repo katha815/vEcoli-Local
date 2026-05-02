@@ -12,6 +12,8 @@
 WORK_DIR="/user/home/il22158/work/vEcoli"
 cd "$WORK_DIR" || exit
 
+module restore        # Restore the saved default modules
+
 # === VERSION CONTROL ===
 # git add. #stages changes under the current directory 
 # SNAPSHOT_BRANCH="snapshots/job-${SLURM_JOB_ID}-$(date +%Y%m%d_%H%M%S)"
