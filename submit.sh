@@ -1,18 +1,21 @@
 #!/bin/bash
-#SBATCH --job-name=gene_KO_test
+#SBATCH --job-name=gene_KO_p_list
 #SBATCH --partition=compute
 #SBATCH --time=3-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/gene_KO_test.%j.out
-#SBATCH --mem=100G
-#SBATCH --cpus-per-task=10
+#SBATCH --output=slurm_logs/gene_KO_p_list.%j.out
+#SBATCH --mem=200G
+#SBATCH --cpus-per-task=16
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
 cd "$WORK_DIR" || exit
 
 module restore        # Restore the saved default modules
+
+# == Python environment setup ==
+source "$WORK_DIR/.venv/bin/activate"
 
 # === VERSION CONTROL ===
 # git add. #stages changes under the current directory 
@@ -29,8 +32,8 @@ module restore        # Restore the saved default modules
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-echo "Run gene knockout test..."
-python runscripts/workflow.py --config configs/N_gene_knockout_test.json
+echo "Run gene knockout with p-list..."
+python runscripts/workflow.py --config configs/N_gene_knockout_p_list.json
 
 # echo "Extracting growth rates from 441 single knockouts..."
 # python reading/growth_rate_extract.py --all --projects gene_ko_441imported_2seeds --suffix 441_KOs_seed100 --lineage-seed 100 --save-timeseries
