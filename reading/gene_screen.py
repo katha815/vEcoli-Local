@@ -18,10 +18,19 @@ import pandas as pd
 import numpy as np
 import argparse
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 # Add reading directory to path
 sys.path.insert(0, "/user/home/il22158/work/vEcoli/reading")
 from gene_expression_trace import track_knockout_dynamics
+
+
+def _normalize_lineage_seeds(lineage_seeds):
+    if lineage_seeds is None:
+        return [0]
+    if isinstance(lineage_seeds, int):
+        return [lineage_seeds]
+    return list(lineage_seeds)
 
 
 def screen_gene_activity_multi_variant(
@@ -31,7 +40,7 @@ def screen_gene_activity_multi_variant(
     generations,
     output_dir,
     downsample_sec=1,  # data is already downsampled to reduce space
-    lineage_seed=0,
+    lineage_seeds=None,
 ):
     """
     Screen gene activity across multiple variants. Saves separate CSV per variant.
@@ -44,6 +53,7 @@ def screen_gene_activity_multi_variant(
         output_dir: Output directory for results
     """
     Path(output_dir).mkdir(parents=True, exist_ok=True)
+    lineage_seeds = _normalize_lineage_seeds(lineage_seeds)
 
     for variant in variants:
         print(f"\n{'=' * 80}\nVariant {variant}\n{'=' * 80}")
@@ -53,89 +63,99 @@ def screen_gene_activity_multi_variant(
             print(f"[{i}/{len(gene_list)}] {gene_id}...", end=" ")
 
             try:
-                result = track_knockout_dynamics(
-                    gene_id=gene_id,
-                    project_folder=project,
-                    variants=[variant],
-                    generations=generations,
-                    lineage_seed=lineage_seed,
-                    figsize=(16, 10),
-                    plot=True,
-                    save=False,
-                    downsample_sec=downsample_sec,
-                )
-                from gene_expression_trace import save_results
+                for lineage_seed in lineage_seeds:
+                    result = track_knockout_dynamics(
+                        gene_id=gene_id,
+                        project_folder=project,
+                        variants=[variant],
+                        generations=generations,
+                        lineage_seed=lineage_seed,
+                        figsize=(16, 10),
+                        plot=True,
+                        save=False,
+                        downsample_sec=downsample_sec,
+                    )
+                    from gene_expression_trace import save_results
 
-                if result is None:
-                    print("not found")
+                    if result is None:
+                        print(f"seed {lineage_seed}: not found", end=" ")
+                        variant_results.append(
+                            {
+                                "gene_id": gene_id,
+                                "variant": variant,
+                                "lineage_seed": lineage_seed,
+                                "status": "not_found",
+                                "all_transcription_success": False,
+                                "all_translation_success": False,
+                                "max_mrna": 0,
+                                "max_protein": 0,
+                                "mean_mrna": 0,
+                                "mean_protein": 0,
+                            }
+                        )
+                        continue
+
+                    seed_output_dir = (
+                        f"{output_dir}/{project}/v{variant}/{lineage_seed}"
+                    )
+                    summary_df = save_results(
+                        result,
+                        gene_id,
+                        project,
+                        [variant],
+                        save_dir=seed_output_dir,
+                        save_pic=True,
+                        save_csv=True,
+                    )
+                    total_tc = (
+                        summary_df["total_tc_initiations"].sum()
+                        if "total_tc_initiations" in summary_df
+                        else 0
+                    )
+                    total_tl = (
+                        summary_df["total_tl_initiations"].sum()
+                        if "total_tl_initiations" in summary_df
+                        else 0
+                    )
+
+                    # Restore mean/max calculation from concatenated time series
+                    all_mrna, all_protein = [], []
+                    for _, data in result.items():
+                        all_mrna.extend(data["mRNA"])
+                        all_protein.extend(data["protein"])
+                    max_mrna = float(np.max(all_mrna)) if all_mrna else 0
+                    max_protein = float(np.max(all_protein)) if all_protein else 0
+                    mean_mrna = float(np.mean(all_mrna)) if all_mrna else 0
+                    mean_protein = float(np.mean(all_protein)) if all_protein else 0
+
                     variant_results.append(
                         {
                             "gene_id": gene_id,
                             "variant": variant,
-                            "status": "not_found",
-                            "all_transcription_success": False,
-                            "all_translation_success": False,
-                            "max_mrna": 0,
-                            "max_protein": 0,
-                            "mean_mrna": 0,
-                            "mean_protein": 0,
+                            "lineage_seed": lineage_seed,
+                            "status": "analyzed",
+                            "all_transcription_success": total_tc,
+                            "all_translation_success": total_tl,
+                            "max_mrna": max_mrna,
+                            "max_protein": max_protein,
+                            "mean_mrna": mean_mrna,
+                            "mean_protein": mean_protein,
                         }
                     )
-                    continue
-                # Use save_results to get summary statistics for total initiations
-                summary_df = save_results(
-                    result,
-                    gene_id,
-                    project,
-                    [variant],
-                    save_dir=output_dir,
-                    save_pic=True,
-                    save_csv=True,
-                )
-                total_tc = (
-                    summary_df["total_tc_initiations"].sum()
-                    if "total_tc_initiations" in summary_df
-                    else 0
-                )
-                total_tl = (
-                    summary_df["total_tl_initiations"].sum()
-                    if "total_tl_initiations" in summary_df
-                    else 0
-                )
-
-                # Restore mean/max calculation from concatenated time series
-                all_mrna, all_protein = [], []
-                for _, data in result.items():
-                    all_mrna.extend(data["mRNA"])
-                    all_protein.extend(data["protein"])
-                max_mrna = float(np.max(all_mrna)) if all_mrna else 0
-                max_protein = float(np.max(all_protein)) if all_protein else 0
-                mean_mrna = float(np.mean(all_mrna)) if all_mrna else 0
-                mean_protein = float(np.mean(all_protein)) if all_protein else 0
-
-                variant_results.append(
-                    {
-                        "gene_id": gene_id,
-                        "variant": variant,
-                        "status": "analyzed",
-                        "all_transcription_success": total_tc,
-                        "all_translation_success": total_tl,
-                        "max_mrna": max_mrna,
-                        "max_protein": max_protein,
-                        "mean_mrna": mean_mrna,
-                        "mean_protein": mean_protein,
-                    }
-                )
-                print(
-                    f"Trancripted units over {generations} generation: {total_tc} \
-                      Translation units over {generations} generation: {total_tl}"
-                )
+                    print(
+                        f"seed {lineage_seed}: Trancripted units over {generations} generation: {total_tc} \
+                          Translation units over {generations} generation: {total_tl}"
+                    )
+                    # Close figures to prevent overlap between seed runs
+                    plt.close("all")
             except Exception as e:
                 print(f"error: {str(e)[:50]}")
+                plt.close("all")  # Clean up on error too
                 variant_results.append(
                     {
                         "gene_id": gene_id,
                         "variant": variant,
+                        "lineage_seed": lineage_seeds[0] if lineage_seeds else 0,
                         "status": "error",
                         "all_transcription_success": False,
                         "all_translation_success": False,
@@ -242,8 +262,9 @@ def main():
     parser.add_argument(
         "--lineage-seed",
         type=int,
-        default=0,
-        help="Lineage seed to read from output paths (default: 0)",
+        nargs="+",
+        default=[0],
+        help="Lineage seed(s) to read from output paths (default: 0)",
     )
     args = parser.parse_args()
 
@@ -292,7 +313,7 @@ def main():
         generations=args.generations,
         output_dir=f"/user/home/il22158/work/vEcoli/reading/results/{args.output_project}",
         downsample_sec=args.downsample_sec,
-        lineage_seed=args.lineage_seed,
+        lineage_seeds=args.lineage_seed,
     )
 
 

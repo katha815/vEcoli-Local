@@ -24,8 +24,7 @@ def save_results(
         return None
 
     # Create directory structure
-    variants_str = "_".join([str(v) for v in sorted(variants)])
-    output_dir = f"{save_dir}/{project_folder}_v_{variants_str}"
+    output_dir = save_dir
     os.makedirs(output_dir, exist_ok=True)
 
     # Save the figure

@@ -1,0 +1,75 @@
+{
+    "experiment_id": "gene_knockout_3_round_test",
+    "sim_data_path": "/user/home/il22158/work/vEcoli/out/gene_knockout_test2/parca/kb/simData.cPickle",
+    "suffix_time": false,
+    "parca_options": {
+        "cpus": 16
+    },
+    "emit_step": 20,
+    "generations": 8,
+    "n_init_sims": 2,
+    "lineage_seed": 100,
+    "single_daughters": true,
+    "emitter": "parquet",
+    "emitter_arg": {
+        "out_dir": "out"
+    },
+    "variants": {
+        "gene_knockout": {
+            "genes_to_knockout": {
+                "value":[
+                        ["EG10109"],
+                        ["EG11288"],
+                        ["EG10539"],
+                        ["EG12087"],
+                        ["G6561"],
+                        ["EG11050"],
+                        ["EG10582"],
+                        ["EG20248"],
+                        ["EG12712"],
+                        ["EG10420"],
+                        ["EG10120"],
+                        ["EG11029"],
+                        ["EG12293"],
+                        ["EG10549"],
+                        ["EG10099"],
+                        ["EG10105"],
+                        ["G6842"],
+                        ["EG10182"],
+                        ["EG12075"],
+                        ["EG11040"],
+                        ["G6701"],
+                        ["G6237"],
+                        ["G7836"],
+                        ["EG11736"],
+                        ["EG12078"],
+                        ["EG11663"],
+                        ["EG10188"],
+                        ["EG10808"],
+                        ["EG10052"],
+                        ["EG10027"],
+                        ["EG12424"],
+                        ["EG11112"],
+                        ["G6397"],
+                        ["EG10073"],
+                        ["EG10137"],
+                        ["EG10361"],
+                        ["EG10928"],
+                        ["EG10036"],
+                        ["EG10774"],
+                        ["EG10118"],
+                        ["EG11221"],
+                        ["EG12713"],
+                        ["EG10095"],
+                        ["G6775"],
+                        ["EG10759"],
+                        ["EG10791"],
+                        ["G7859"],
+                        ["EG11692"],
+                        ["EG10100"],
+                        ["EG11699"]
+                        ]
+            }
+        }
+    }
+}
