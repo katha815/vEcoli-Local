@@ -1,6 +1,6 @@
 {
     "experiment_id": "gene_knockout_3_round_test",
-    "sim_data_path": "/user/home/il22158/work/vEcoli/out/gene_knockout_test2/parca/kb/simData.cPickle",
+    "sim_data_path": "/user/home/il22158/work/vEcoli/out/gene_knockout_test1/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
         "cpus": 16

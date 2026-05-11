@@ -18,6 +18,37 @@ Expected variant indices (depends on length of sim_data.process.transcription.rn
 CONTROL_OUTPUT = dict(shortName="control", desc="Control simulation")
 
 
+def _as_single_item_list(value):
+    if isinstance(value, (list, tuple)) and len(value) == 1:
+        return value[0]
+    return value
+
+
+def _collect_tu_indexes_for_gene(transcription, gene_id):
+    tu_indexes = []
+    cistron_array = transcription.cistron_data.struct_array
+
+    for cistron in cistron_array:
+        if cistron["gene_id"] == gene_id:
+            cistron_id = cistron["id"]
+            rna_idxs = transcription.cistron_id_to_rna_indexes(cistron_id)
+            if hasattr(rna_idxs, "__iter__"):
+                for i in rna_idxs:
+                    tu_indexes.append(int(i))
+            else:
+                tu_indexes.append(int(rna_idxs))
+            return tu_indexes
+
+    return []
+
+
+def _collect_tu_indexes_for_rna_id(transcription, rna_id):
+    for index, rna in enumerate(transcription.rna_data.struct_array):
+        if rna["id"] == rna_id:
+            return [int(index)]
+    return []
+
+
 def gene_knockout(sim_data, index):
     rna_data = sim_data.process.transcription.rna_data
 
@@ -40,51 +71,44 @@ def gene_knockout(sim_data, index):
 def apply_variant(sim_data, params):
     """Variant entrypoint used by vEcoli `create_variants` runner.
 
-    Expects `params` to contain a key `genes_to_knockout` which is a list
-    of gene identifiers. Each gene identifier may be a string or a one-item
-    list (configs often provide nested lists). For each gene ID, find the
-    corresponding cistron(s) and the TU (RNA) index(es) that contain it,
-    then call `sim_data.adjust_final_expression` to set expression to 0.
-    This preserves the original semantics of the old implementation
-    (immediate renormalization via `adjust_final_expression`).
+    Expects `params` to contain a key `genes_to_knockout`, which may contain
+    either gene IDs or TU/RNA IDs. Each entry may be a string or a one-item
+    list (configs often provide nested lists). Gene IDs are resolved through
+    cistron data; TU/RNA IDs are resolved directly from `rna_data`.
+
+    The resolved TU indexes are passed to `sim_data.adjust_final_expression`
+    to preserve the original knockout semantics.
     """
     # Normalize params shape: support nested lists like [["EG10109"]]
     genes_param = params.get("genes_to_knockout", [])
     # Flatten one level if necessary
     flat_genes = []
     for item in genes_param:
-        if isinstance(item, (list, tuple)) and len(item) == 1:
-            flat_genes.append(item[0])
-        else:
-            flat_genes.append(item)
+        flat_genes.append(_as_single_item_list(item))
 
     # Collect TU indices to knock out. `adjust_final_expression` expects
     # integer indices into `sim_data.process.transcription.rna_data` (TU index).
     tu_indices = []
     transcription = sim_data.process.transcription
-    cistron_array = transcription.cistron_data.struct_array
 
-    for gene_id in flat_genes:
-        if not isinstance(gene_id, str):
-            print(f"Warning: expected gene ID string, got {gene_id!r}; skipping")
+    for knockout_id in flat_genes:
+        if not isinstance(knockout_id, str):
+            print(
+                f"Warning: expected gene or TU ID string, got {knockout_id!r}; skipping"
+            )
             continue
 
-        # Find cistron(s) for this gene_id
-        found = False
-        for cistron in cistron_array:
-            if cistron["gene_id"] == gene_id:
-                cistron_id = cistron["id"]
-                rna_idxs = transcription.cistron_id_to_rna_indexes(cistron_id)
-                if hasattr(rna_idxs, "__iter__"):
-                    for i in rna_idxs:
-                        tu_indices.append(int(i))
-                else:
-                    tu_indices.append(int(rna_idxs))
-                found = True
-                break
+        gene_tu_indexes = _collect_tu_indexes_for_gene(transcription, knockout_id)
+        if gene_tu_indexes:
+            tu_indices.extend(gene_tu_indexes)
+            continue
 
-        if not found:
-            print(f"Warning: gene ID not found in cistron data: {gene_id}")
+        rna_tu_indexes = _collect_tu_indexes_for_rna_id(transcription, knockout_id)
+        if rna_tu_indexes:
+            tu_indices.extend(rna_tu_indexes)
+            continue
+
+        print(f"Warning: gene or TU ID not found in transcription data: {knockout_id}")
 
     # Remove duplicates while preserving order
     seen = set()
