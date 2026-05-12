@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=gene_screen_3rd_test
+#SBATCH --job-name=gene_knockout_TU_ID_test
 #SBATCH --partition=compute
 #SBATCH --time=3-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/gene_screen_3rd_test.%j.out
-#SBATCH --mem=100G
-#SBATCH --cpus-per-task=16
+#SBATCH --output=slurm_logs/gene_knockout_TU_ID_test.%j.out
+#SBATCH --mem=200G
+#SBATCH --cpus-per-task=24
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
@@ -34,11 +34,11 @@ module list       # Print loaded modules
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-# echo "Run gene knockout for 3rd test..."
-# python runscripts/workflow.py --config configs/N_gene_knockout_3_round_test.json
+echo "Run gene knockout for therest of functional gene list with TU ID..."
+python runscripts/workflow.py --config configs/N_gene_knockout_TU_ID.json
 
-echo "Run gene screen for the 3rd KO test..."
-python reading/gene_screen.py --project gene_knockout_3_round_test --lineage-seed 100 101 --variants $(seq 0 50) --gene-list surrogate/third_round_tested_gene_list.txt
+# echo "Run gene screen for the 3rd KO test..."
+# python reading/gene_screen.py --project gene_knockout_3_round_test --lineage-seed 100 101 --variants $(seq 0 50) --gene-list surrogate/third_round_tested_gene_list.txt
 
 # echo "Extracting growth rates from 441 single knockouts..."
 # python reading/growth_rate_extract.py --all --projects gene_ko_441imported_2seeds --suffix 441_KOs_seed100 --lineage-seed 100 --save-timeseries

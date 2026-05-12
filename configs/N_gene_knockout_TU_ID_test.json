@@ -1,0 +1,28 @@
+{
+    "experiment_id": "gene_knockout_TU_ID_test",
+    "sim_data_path": "/user/home/il22158/work/vEcoli/out/gene_knockout_test1/parca/kb/simData.cPickle",
+    "suffix_time": false,
+    "parca_options": {
+        "cpus": 24
+    },
+    "emit_step": 20,
+    "generations": 8,
+    "n_init_sims": 2,
+    "lineage_seed": 100,
+    "single_daughters": true,
+    "emitter": "parquet",
+    "emitter_arg": {
+        "out_dir": "out"
+    },
+    "skip_baseline": true,
+    "variants": {
+        "gene_knockout": {
+            "genes_to_knockout": {
+                "value":[
+                        ["EG10016_RNA[c]"],
+                        ["TU0-1002[c]"]
+                        ]
+            }
+        }
+    }
+}
