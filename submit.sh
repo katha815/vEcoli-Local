@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=gene_knockout_TU_ID_test
+#SBATCH --job-name=gene_knockout_TU_ID_rerun
 #SBATCH --partition=compute
-#SBATCH --time=3-00:00:00
+#SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/gene_knockout_TU_ID_test.%j.out
+#SBATCH --output=slurm_logs/gene_knockout_TU_ID_rerun2.%j.out
 #SBATCH --mem=200G
-#SBATCH --cpus-per-task=24
+#SBATCH --cpus-per-task=20
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
@@ -34,8 +34,11 @@ module list       # Print loaded modules
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-echo "Run gene knockout for therest of functional gene list with TU ID..."
-python runscripts/workflow.py --config configs/N_gene_knockout_TU_ID.json
+# echo "Run gene knockout for the rest of functional gene list with TU ID..."
+# python runscripts/workflow.py --config configs/N_gene_knockout_TU_ID.json
+
+# Resume workflow for previous job ended because  if time limit.
+python runscripts/workflow.py --config configs/N_gene_knockout_TU_ID_rerun.json
 
 # echo "Run gene screen for the 3rd KO test..."
 # python reading/gene_screen.py --project gene_knockout_3_round_test --lineage-seed 100 101 --variants $(seq 0 50) --gene-list surrogate/third_round_tested_gene_list.txt

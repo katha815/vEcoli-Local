@@ -1,0 +1,434 @@
+{
+  "experiment_id": "N_gene_knockout_TU_ID_resume_add_6_to8",
+  "sim_data_path": "/user/home/il22158/work/vEcoli/out/gene_knockout_test1/parca/kb/simData.cPickle",
+  "suffix_time": false,
+  "parca_options": {
+    "cpus": 16
+  },
+  "emit_step": 20,
+  "generations": 6,
+  "n_init_sims": 2,
+  "lineage_seed": 100,
+  "single_daughters": true,
+  "emitter": "parquet",
+  "emitter_arg": {
+    "out_dir": "/user/work/il22158/vEcoli/out"
+  },
+  "skip_baseline": true,
+  "variants": {
+    "gene_knockout": {
+      "genes_to_knockout": {
+        "value": [
+          [
+            "TU0-13080[c]"
+          ],
+          [
+            "TU0-13093[c]"
+          ],
+          [
+            "TU0-13444[c]"
+          ],
+          [
+            "TU0-13519[c]"
+          ],
+          [
+            "TU0-13593[c]"
+          ],
+          [
+            "TU0-13642[c]"
+          ],
+          [
+            "TU0-13935[c]"
+          ],
+          [
+            "TU0-14042[c]"
+          ],
+          [
+            "TU0-14257[c]"
+          ],
+          [
+            "TU0-14399[c]"
+          ],
+          [
+            "TU0-14417[c]"
+          ],
+          [
+            "TU0-14467[c]"
+          ],
+          [
+            "TU0-14634[c]"
+          ],
+          [
+            "TU0-198747[c]"
+          ],
+          [
+            "TU0-42478[c]"
+          ],
+          [
+            "TU0-5061[c]"
+          ],
+          [
+            "TU0-5501[c]"
+          ],
+          [
+            "TU0-6409[c]"
+          ],
+          [
+            "TU0-6441[c]"
+          ],
+          [
+            "TU0-6482[c]"
+          ],
+          [
+            "TU0-6501[c]"
+          ],
+          [
+            "TU0-6506[c]"
+          ],
+          [
+            "TU0-6562[c]"
+          ],
+          [
+            "TU0-6886[c]"
+          ],
+          [
+            "TU0-8472[c]"
+          ],
+          [
+            "TU0-8493[c]"
+          ],
+          [
+            "TU00004[c]"
+          ],
+          [
+            "TU00008[c]"
+          ],
+          [
+            "TU00067[c]"
+          ],
+          [
+            "TU00090[c]"
+          ],
+          [
+            "TU00178[c]"
+          ],
+          [
+            "TU00192[c]"
+          ],
+          [
+            "TU00256[c]"
+          ],
+          [
+            "TU00281[c]"
+          ]
+        ]
+      }
+    }
+  },
+  "initial_state_overrides": [
+    {
+      "variant": 28,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=227/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 18,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=177/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 18,
+      "lineage_seed": 100,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=177/seed=100/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 2,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=28/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 22,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=185/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 9,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=85/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 34,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=273/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 34,
+      "lineage_seed": 100,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=273/seed=100/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 23,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=187/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 23,
+      "lineage_seed": 100,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=187/seed=100/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 10,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=93/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 27,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=225/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 8,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=70/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 24,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=196/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 14,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=130/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 13,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=114/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 19,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=180/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 19,
+      "lineage_seed": 100,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=180/seed=100/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 29,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=241/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 21,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=184/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 17,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=173/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 25,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=208/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 4,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=42/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 32,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=262/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 15,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=144/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 31,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=260/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 5,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=47/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 20,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=182/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 3,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=39/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 30,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=244/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 26,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=211/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 1,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=25/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 11,
+      "lineage_seed": 100,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=95/seed=100/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 16,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=169/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 33,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=269/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 12,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=99/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 7,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=66/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    },
+    {
+      "variant": 6,
+      "lineage_seed": 101,
+      "initial_state_file": "/user/work/il22158/vEcoli/out/gene_knockout_TU_ID_rest_list/daughter_states/variant=50/seed=101/generation=2/agent_id=00/daughter_state_1.json",
+      "initial_global_time": 48.0,
+      "start_generation": 3,
+      "resume_generations": 6
+    }
+  ]
+}
