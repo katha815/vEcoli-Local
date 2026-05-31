@@ -1,0 +1,26 @@
+{
+    "experiment_id": "gene_knockout_leftover",
+    "sim_data_path": "/user/home/il22158/work/vEcoli/out/gene_knockout_test1/parca/kb/simData.cPickle",
+    "suffix_time": false,
+    "parca_options": {
+        "cpus": 20
+    },
+    "emit_step": 20,
+    "generations": 8,
+    "n_init_sims": 2,
+    "lineage_seed": 100,
+    "single_daughters": true,
+    "emitter": "parquet",
+    "emitter_arg": {
+        "out_dir": "out"
+    },
+    "variants": {
+        "gene_knockout": {
+            "genes_to_knockout": {
+                "value":[
+                        ["EG10016"], ["G6941"], ["G6943"]
+                        ]
+            }
+        }
+    }
+}

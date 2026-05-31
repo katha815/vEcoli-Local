@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=gene_knockout_TU_ID_rerun
+#SBATCH --job-name=gene_knockout_leftover
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/gene_knockout_TU_ID_rerun2.%j.out
+#SBATCH --output=slurm_logs/gene_knockout_leftover.%j.out
 #SBATCH --mem=200G
 #SBATCH --cpus-per-task=20
 
@@ -38,7 +38,7 @@ module list       # Print loaded modules
 # python runscripts/workflow.py --config configs/N_gene_knockout_TU_ID.json
 
 # Resume workflow for previous job ended because  if time limit.
-python runscripts/workflow.py --config configs/N_gene_knockout_TU_ID_rerun.json
+python runscripts/workflow.py --config configs/N_gene_knockout_leftover.json
 
 # echo "Run gene screen for the 3rd KO test..."
 # python reading/gene_screen.py --project gene_knockout_3_round_test --lineage-seed 100 101 --variants $(seq 0 50) --gene-list surrogate/third_round_tested_gene_list.txt

@@ -1,0 +1,25 @@
+gene_id,left_project_name,right_project_name,left_variant,right_variant,lineage_seed,left_generations,right_generations,generation,time_equal_exact,rna_equal_exact,protein_equal_exact,rna_max_abs_diff,protein_max_abs_diff,note
+EG10016,gene_knockout_leftover,gene_knockout_TU_ID_test,1,1,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",1,True,True,True,0,0,Compared on overlapping generation
+EG10016,gene_knockout_leftover,gene_knockout_TU_ID_test,1,1,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",2,,,,,,Skipped: No history parquet files under: /user/home/il22158/work/vEcoli/out/gene_knockout_TU_ID_test/history/experiment_id=gene_knockout_TU_ID_test/variant=1/lineage_seed=100/generation=2
+EG10016,gene_knockout_leftover,gene_knockout_TU_ID_test,1,1,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",3,True,True,True,0,0,Compared on overlapping generation
+EG10016,gene_knockout_leftover,gene_knockout_TU_ID_test,1,1,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",4,True,True,True,0,0,Compared on overlapping generation
+EG10016,gene_knockout_leftover,gene_knockout_TU_ID_test,1,1,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",5,True,True,True,0,0,Compared on overlapping generation
+EG10016,gene_knockout_leftover,gene_knockout_TU_ID_test,1,1,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",6,True,True,True,0,0,Compared on overlapping generation
+EG10016,gene_knockout_leftover,gene_knockout_TU_ID_test,1,1,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",7,True,True,True,0,0,Compared on overlapping generation
+EG10016,gene_knockout_leftover,gene_knockout_TU_ID_test,1,1,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",8,True,True,True,0,0,Compared on overlapping generation
+G6941,gene_knockout_leftover,gene_knockout_TU_ID_test,2,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",1,True,True,True,0,0,Compared on overlapping generation
+G6941,gene_knockout_leftover,gene_knockout_TU_ID_test,2,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",2,,,,,,Skipped: No history parquet files under: /user/home/il22158/work/vEcoli/out/gene_knockout_TU_ID_test/history/experiment_id=gene_knockout_TU_ID_test/variant=2/lineage_seed=100/generation=2
+G6941,gene_knockout_leftover,gene_knockout_TU_ID_test,2,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",3,True,True,True,0,0,Compared on overlapping generation
+G6941,gene_knockout_leftover,gene_knockout_TU_ID_test,2,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",4,True,True,True,0,0,Compared on overlapping generation
+G6941,gene_knockout_leftover,gene_knockout_TU_ID_test,2,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",5,True,True,True,0,0,Compared on overlapping generation
+G6941,gene_knockout_leftover,gene_knockout_TU_ID_test,2,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",6,True,True,True,0,0,Compared on overlapping generation
+G6941,gene_knockout_leftover,gene_knockout_TU_ID_test,2,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",7,True,True,True,0,0,Compared on overlapping generation
+G6941,gene_knockout_leftover,gene_knockout_TU_ID_test,2,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",8,True,True,True,0,0,Compared on overlapping generation
+G6943,gene_knockout_leftover,gene_knockout_TU_ID_test,3,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",1,True,True,True,0,0,Compared on overlapping generation
+G6943,gene_knockout_leftover,gene_knockout_TU_ID_test,3,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",2,,,,,,Skipped: No history parquet files under: /user/home/il22158/work/vEcoli/out/gene_knockout_TU_ID_test/history/experiment_id=gene_knockout_TU_ID_test/variant=2/lineage_seed=100/generation=2
+G6943,gene_knockout_leftover,gene_knockout_TU_ID_test,3,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",3,True,True,True,0,0,Compared on overlapping generation
+G6943,gene_knockout_leftover,gene_knockout_TU_ID_test,3,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",4,True,True,True,0,0,Compared on overlapping generation
+G6943,gene_knockout_leftover,gene_knockout_TU_ID_test,3,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",5,True,True,True,0,0,Compared on overlapping generation
+G6943,gene_knockout_leftover,gene_knockout_TU_ID_test,3,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",6,True,True,True,0,0,Compared on overlapping generation
+G6943,gene_knockout_leftover,gene_knockout_TU_ID_test,3,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",7,True,True,True,0,0,Compared on overlapping generation
+G6943,gene_knockout_leftover,gene_knockout_TU_ID_test,3,2,100,"[1, 2, 3, 4, 5, 6, 7, 8]","[1, 2, 3, 4, 5, 6, 7, 8]",8,True,True,True,0,0,Compared on overlapping generation
