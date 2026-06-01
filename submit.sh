@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=gene_knockout_leftover
+#SBATCH --job-name=gene_knockout_growth
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/gene_knockout_leftover.%j.out
-#SBATCH --mem=200G
-#SBATCH --cpus-per-task=20
+#SBATCH --output=slurm_logs/gene_knockout_growth.%j.out
+#SBATCH --mem=100G
+#SBATCH --cpus-per-task=10
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
@@ -38,14 +38,20 @@ module list       # Print loaded modules
 # python runscripts/workflow.py --config configs/N_gene_knockout_TU_ID.json
 
 # Resume workflow for previous job ended because  if time limit.
-python runscripts/workflow.py --config configs/N_gene_knockout_leftover.json
+# python runscripts/workflow.py --config configs/N_gene_knockout_leftover.json
 
 # echo "Run gene screen for the 3rd KO test..."
 # python reading/gene_screen.py --project gene_knockout_3_round_test --lineage-seed 100 101 --variants $(seq 0 50) --gene-list surrogate/third_round_tested_gene_list.txt
 
-# echo "Extracting growth rates from 441 single knockouts..."
-# python reading/growth_rate_extract.py --all --projects gene_ko_441imported_2seeds --suffix 441_KOs_seed100 --lineage-seed 100 --save-timeseries
-# python reading/growth_rate_extract.py --all --projects gene_ko_441imported_2seeds --suffix 441_KOs_seed101 --lineage-seed 101 --save-timeseries
+echo "Extracting growth rates for default KOs..."
+#[rerun | seed=10]
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py --all --save-timeseries --projects gene_knockout_TU_ID_rest_list_rerun gene_knockout_TU_ID_rest_list_rerun2 --suffix gene_knockout_TU_ID_rest_list_rerun12_seed10 --lineage-seed 10
+
+#[rerun | seed=11]
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py --all --save-timeseries --projects gene_knockout_TU_ID_rest_list_rerun gene_knockout_TU_ID_rest_list_rerun2 --suffix gene_knockout_TU_ID_rest_list_rerun12_seed11 --lineage-seed 11
+
+#[leftover | seed=101]
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py --all --save-timeseries --projects gene_knockout_leftover --suffix gene_knockout_leftover_seed101 --lineage-seed 101
 
 # echo "Performing functional gene analysis..."
 # python reading/functional_gene_analysis.py  
