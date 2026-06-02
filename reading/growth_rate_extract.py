@@ -20,7 +20,7 @@ def extract_growth_rate_data(
     project_folder,
     variant_key="condition",
     generation=1,
-    read_interval_sec=20,
+    read_interval_sec=1,
     max_variants=None,
     save_timeseries=False,
     lineage_seed=0,
@@ -37,7 +37,7 @@ def extract_growth_rate_data(
     generation : int or list
         Generation(s) to extract. If list, data is averaged across generations
     read_interval_sec : int
-        Downsample data (take 1 point every N seconds). Default=20
+        Downsample data (take 1 point every N original timepoints). Default=1
     max_variants : int or None
         Max variants to extract (for testing). None = all
     save_timeseries : bool
