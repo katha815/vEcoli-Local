@@ -49,7 +49,7 @@ def _collect_tu_indexes_for_rna_id(transcription, rna_id):
     return []
 
 
-def gene_knockout(sim_data, index):
+def gene_knockout(sim_data, index):  # Imported function from wcEcoli
     rna_data = sim_data.process.transcription.rna_data
 
     nGenes = len(rna_data)
@@ -68,7 +68,7 @@ def gene_knockout(sim_data, index):
     ), sim_data
 
 
-def apply_variant(sim_data, params):
+def apply_variant(sim_data, params):  # Transplanted function
     """Variant entrypoint used by vEcoli `create_variants` runner.
 
     Expects `params` to contain a key `genes_to_knockout`, which may contain
