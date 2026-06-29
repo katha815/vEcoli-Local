@@ -13,6 +13,12 @@ Modifies:
 Expected variant indices (depends on length of sim_data.process.transcription.rna_data):
         0: control
         1-4692: gene index to knockout
+
+Logic:
+    gene knockout =
+        identify cistron with gene_id
+        get its TUs
+        disable those TUs only
 """
 
 CONTROL_OUTPUT = dict(shortName="control", desc="Control simulation")

@@ -19,8 +19,7 @@
         "gene_knockout": {
             "genes_to_knockout": {
                 "value":[
-                        ["EG10016_RNA[c]"],
-                        ["TU0-1002[c]"]
+
                         ]
             }
         }
