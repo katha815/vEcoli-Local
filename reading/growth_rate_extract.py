@@ -4,7 +4,7 @@ Extract growth rate data from vEcoli simulations.
 Based on multi_gen_plot.py approach.
 
 Usage:
-    python growth_rate_extract.py --all  # Extract all variants, all 8 generations
+    python growth_rate_extract.py --all  # Extract all variants, all available generations on disk
     python growth_rate_extract.py --trial  # Extract 2 variants, 2 generations (quick test)
 """
 
@@ -14,6 +14,24 @@ import glob
 import json
 import argparse
 import os
+
+
+def get_available_generations(variant_base_path):
+    """Return generations that have at least one parquet file under the variant path."""
+    available_generations = []
+
+    for generation_path in sorted(glob.glob(f"{variant_base_path}/generation=*")):
+        generation_name = os.path.basename(generation_path)
+        try:
+            generation = int(generation_name.split("=", 1)[1])
+        except (IndexError, ValueError):
+            continue
+
+        pq_files = glob.glob(f"{generation_path}/agent_id=*/*.pq")
+        if pq_files:
+            available_generations.append(generation)
+
+    return sorted(set(available_generations))
 
 
 def extract_growth_rate_data(
@@ -34,8 +52,11 @@ def extract_growth_rate_data(
         Name of the project folder (e.g., "all_media_conditions1")
     variant_key : str
         Key in metadata for variant information
-    generation : int or list
-        Generation(s) to extract. If list, data is averaged across generations
+    generation : int, list, or None
+        Generation(s) to extract. If list, data is averaged across generations.
+        If None, all available generations for each variant are discovered from disk.
+        The summary column max_generation reports the highest generation with a valid
+        parquet path and data for that variant.
     read_interval_sec : int
         Downsample data (take 1 point every N original timepoints). Default=1
     max_variants : int or None
@@ -64,8 +85,12 @@ def extract_growth_rate_data(
         /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_timeseries_{suffix}_{run_type}.parquet
     """
 
-    # Convert generation to list
-    gen_list = [generation] if isinstance(generation, int) else list(generation)
+    # Convert generation to list when explicitly provided.
+    gen_list = (
+        None
+        if generation is None
+        else ([generation] if isinstance(generation, int) else list(generation))
+    )
 
     # Load metadata
     metadata_file = f"/user/home/il22158/work/vEcoli/out/{project_folder}/variant_sim_data/metadata.json"
@@ -100,7 +125,14 @@ def extract_growth_rate_data(
 
         # Load data from all generations
         gen_data = []
-        for gen in gen_list:
+        if gen_list is None:
+            variant_base_path = f"/user/home/il22158/work/vEcoli/out/{project_folder}/history/experiment_id={project_folder}/variant={variant_id}/lineage_seed={lineage_seed}"
+            variant_gen_list = get_available_generations(variant_base_path)
+        else:
+            variant_gen_list = gen_list
+
+        loaded_generations = []
+        for gen in variant_gen_list:
             agent_id = "0" * gen
 
             base_path = f"/user/home/il22158/work/vEcoli/out/{project_folder}/history/experiment_id={project_folder}/variant={variant_id}/lineage_seed={lineage_seed}/generation={gen}/agent_id={agent_id}"
@@ -122,7 +154,9 @@ def extract_growth_rate_data(
                 .sort_values("time")
                 .reset_index(drop=True)
             )
+            df_gen["generation"] = gen
             gen_data.append(df_gen)
+            loaded_generations.append(gen)
 
         if not gen_data:
             continue
@@ -141,6 +175,7 @@ def extract_growth_rate_data(
                         "project",
                         "variant",
                         "label",
+                        "generation",
                         "time",
                         "listeners__mass__instantaneous_growth_rate",
                         "listeners__mass__dry_mass",
@@ -168,7 +203,7 @@ def extract_growth_rate_data(
                     "fold_change_mass": dry_mass[-1] / dry_mass[0],
                     "duration_sec": time_vals[-1] - time_vals[0],
                     "n_timepoints": len(df_all),
-                    "generations_used": len(gen_list),
+                    "max_generation": max(loaded_generations),
                 }
             )
 
@@ -179,7 +214,12 @@ def extract_growth_rate_data(
         df_growth = pd.DataFrame(all_data)
 
     if len(df_growth) > 0:
-        gen_str = f"{len(gen_list)} gens" if len(gen_list) > 1 else f"gen {gen_list[0]}"
+        if gen_list is None:
+            gen_str = "all available generations"
+        else:
+            gen_str = (
+                f"{len(gen_list)} gens" if len(gen_list) > 1 else f"gen {gen_list[0]}"
+            )
         data_type = "timeseries" if save_timeseries else "summary"
         print(f"✓ {project_folder}: {len(all_data)} variants, {gen_str}, {data_type}")
 
@@ -190,6 +230,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Extract growth rate data from vEcoli simulations.\n\n"
         "By default, only summary statistics are saved as CSV.\n"
+        "Use --all to extract every generation that exists on disk for each variant,\n"
+        "including projects that stop early before the nominal final generation.\n"
         "Use --save-timeseries to also save the full downsampled timeseries for all variants and generations as a parquet file.\n"
         "Example: python growth_rate_extract.py --all --projects gene_ko_trial40_seed101 --suffix seed101 --lineage-seed 101 --save-timeseries"
     )
@@ -199,7 +241,9 @@ def main():
         help="If set, save the full timeseries data to a parquet file. If not set, only summary statistics will be saved.",
     )
     parser.add_argument(
-        "--all", action="store_true", help="Extract all variants, all 8 generations"
+        "--all",
+        action="store_true",
+        help="Extract all variants and every generation that has data on disk",
     )
     parser.add_argument(
         "--trial", action="store_true", help="Trial run: 2 variants, 2 generations"
@@ -209,7 +253,7 @@ def main():
         type=int,
         nargs="+",
         default=None,
-        help="Specific generations to extract (e.g., --generations 1 2 3)",
+        help="Specific generations to extract (e.g., --generations 1 2 3). Use --all to discover all available generations on disk.",
     )
     parser.add_argument(
         "--max-variants",
@@ -256,7 +300,7 @@ def main():
 
     # Determine extraction parameters
     if args.all:
-        generations = list(range(1, 9))  # All 8 generations
+        generations = None
         max_variants = None
         run_type = "ALL"
     elif args.trial:
@@ -274,7 +318,7 @@ def main():
     print("=" * 80)
     print(f"GROWTH RATE EXTRACTION - {run_type}")
     print(f"Projects: {[p['folder'] for p in projects]}")
-    print(f"Generations: {generations}")
+    print(f"Generations: {'all available' if generations is None else generations}")
     print(f"Max variants per project: {max_variants if max_variants else 'all'}")
     print(f"Output suffix: {args.suffix}")
     print("=" * 80)
@@ -325,6 +369,7 @@ def main():
             dry_mass = group["listeners__mass__dry_mass"].values
             time_vals = group["time"].values
             label = group["label"].iloc[0]
+            max_generation = int(group["generation"].max())
             summary_rows.append(
                 {
                     "project": project,
@@ -340,7 +385,7 @@ def main():
                     "fold_change_mass": dry_mass[-1] / dry_mass[0],
                     "duration_sec": time_vals[-1] - time_vals[0],
                     "n_timepoints": len(group),
-                    "generations_used": len(generations),
+                    "max_generation": max_generation,
                 }
             )
         df_summary = pd.DataFrame(summary_rows)
