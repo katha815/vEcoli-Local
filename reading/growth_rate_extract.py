@@ -6,6 +6,8 @@ Based on multi_gen_plot.py approach.
 Usage:
     python growth_rate_extract.py --all  # Extract all variants, all available generations on disk
     python growth_rate_extract.py --trial  # Extract 2 variants, 2 generations (quick test)
+    python growth_rate_extract.py --lineage-seeds 0 1 2  # Extract the same project across multiple seeds
+    python growth_rate_extract.py --lineage-seeds 100  # Extract a single seed with the same flag
 """
 
 import pandas as pd
@@ -169,12 +171,14 @@ def extract_growth_rate_data(
             df_all["project"] = project_folder
             df_all["variant"] = variant_id
             df_all["label"] = label
+            df_all["lineage_seed"] = lineage_seed
             all_data.append(
                 df_all[
                     [
                         "project",
                         "variant",
                         "label",
+                        "lineage_seed",
                         "generation",
                         "time",
                         "listeners__mass__instantaneous_growth_rate",
@@ -193,6 +197,7 @@ def extract_growth_rate_data(
                     "project": project_folder,
                     "variant": variant_id,
                     "label": label,
+                    "lineage_seed": lineage_seed,
                     "mean_growth_rate": np.mean(growth_rate),
                     "median_growth_rate": np.median(growth_rate),
                     "std_growth_rate": np.std(growth_rate),
@@ -230,10 +235,11 @@ def main():
     parser = argparse.ArgumentParser(
         description="Extract growth rate data from vEcoli simulations.\n\n"
         "By default, only summary statistics are saved as CSV.\n"
-        "Use --all to extract every generation that exists on disk for each variant,\n"
+        "Use --all to discover and extract every generation that exists on disk for each variant,\n"
         "including projects that stop early before the nominal final generation.\n"
+        "Use --lineage-seeds to extract the same project across multiple lineage seeds.\n"
         "Use --save-timeseries to also save the full downsampled timeseries for all variants and generations as a parquet file.\n"
-        "Example: python growth_rate_extract.py --all --projects gene_ko_trial40_seed101 --suffix seed101 --lineage-seed 101 --save-timeseries"
+        "Example: python growth_rate_extract.py --all --projects gene_ko_trial40_seed101 --suffix seed101 --lineage-seeds 101 102 --save-timeseries"
     )
     parser.add_argument(
         "--save-timeseries",
@@ -279,10 +285,11 @@ def main():
         help='Suffix for output filenames only (e.g., "seed100", "trial1")',
     )
     parser.add_argument(
-        "--lineage-seed",
+        "--lineage-seeds",
         type=int,
-        default=0,
-        help="Lineage seed to use for data extraction.",
+        nargs="+",
+        default=[0],
+        help="One or more lineage seeds to extract. Default: 0.",
     )
 
     args = parser.parse_args()
@@ -320,6 +327,8 @@ def main():
     print(f"Projects: {[p['folder'] for p in projects]}")
     print(f"Generations: {'all available' if generations is None else generations}")
     print(f"Max variants per project: {max_variants if max_variants else 'all'}")
+    lineage_seeds = args.lineage_seeds
+    print(f"Lineage seeds: {lineage_seeds}")
     print(f"Output suffix: {args.suffix}")
     print("=" * 80)
     print()
@@ -332,21 +341,22 @@ def main():
     all_summary = []
     all_timeseries = []
     for proj in projects:
-        df = extract_growth_rate_data(
-            proj["folder"],
-            proj["variant_key"],
-            generation=generations,
-            max_variants=max_variants,
-            save_timeseries=args.save_timeseries,
-            lineage_seed=args.lineage_seed,
-        )
-        if len(df) > 0:
-            if args.save_timeseries:
-                # If timeseries, append to timeseries list
-                all_timeseries.append(df)
-            else:
-                # If summary, append to summary list
-                all_summary.append(df)
+        for lineage_seed in lineage_seeds:
+            df = extract_growth_rate_data(
+                proj["folder"],
+                proj["variant_key"],
+                generation=generations,
+                max_variants=max_variants,
+                save_timeseries=args.save_timeseries,
+                lineage_seed=lineage_seed,
+            )
+            if len(df) > 0:
+                if args.save_timeseries:
+                    # If timeseries, append to timeseries list
+                    all_timeseries.append(df)
+                else:
+                    # If summary, append to summary list
+                    all_summary.append(df)
 
     if args.save_timeseries:
         if not all_timeseries:
@@ -362,9 +372,11 @@ def main():
             f"✓ Saved timeseries: {timeseries_file} ({len(df_timeseries)} timepoints)"
         )
         # Also create summary from timeseries
-        # Group by project and variant, calculate summary stats
+        # Group by project, variant, and seed, calculate summary stats
         summary_rows = []
-        for (project, variant), group in df_timeseries.groupby(["project", "variant"]):
+        for (project, variant, lineage_seed), group in df_timeseries.groupby(
+            ["project", "variant", "lineage_seed"]
+        ):
             growth_rate = group["listeners__mass__instantaneous_growth_rate"].values
             dry_mass = group["listeners__mass__dry_mass"].values
             time_vals = group["time"].values
@@ -375,6 +387,7 @@ def main():
                     "project": project,
                     "variant": variant,
                     "label": label,
+                    "lineage_seed": lineage_seed,
                     "mean_growth_rate": np.mean(growth_rate),
                     "median_growth_rate": np.median(growth_rate),
                     "std_growth_rate": np.std(growth_rate),

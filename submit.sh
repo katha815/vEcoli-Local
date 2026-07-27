@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=gene_knockout_leftover_rerun3
+#SBATCH --job-name=growth_rate_extract_test
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/gene_knockout_leftover_rerun3.%j.out
-#SBATCH --mem=200G
-#SBATCH --cpus-per-task=20
+#SBATCH --output=slurm_logs/growth_rate_extract_test.%j.out
+#SBATCH --mem=100G
+#SBATCH --cpus-per-task=10
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
@@ -34,12 +34,12 @@ module list       # Print loaded modules
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-echo "Run for 40 trial gene knockout for 16 generations with 5 diffferent media conditions..."
-python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_basal.json
-python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_aa.json
-python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_accetate.json
-python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_succinate.json
-python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_no_ox.json
+# echo "Run for 40 trial gene knockout for 16 generations with 5 diffferent media conditions..."
+# python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_basal.json
+# python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_aa.json
+# python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_accetate.json
+# python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_succinate.json
+# python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_no_ox.json
 
 # Resume workflow for previous job ended because  if time limit.
 # python runscripts/workflow.py --config configs/N_gene_knockout_leftover.json
@@ -47,9 +47,11 @@ python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_no_ox.j
 # echo "Run gene screen for the 3rd KO test..."
 # python reading/gene_screen.py --project gene_knockout_3_round_test --lineage-seed 100 101 --variants $(seq 0 50) --gene-list surrogate/third_round_tested_gene_list.txt
 
-# echo "Extracting growth rates for default KO trail runs..."
-# #[rerun | seed=10]
-# # python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py --all --save-timeseries --projects gene_knockout_TU_ID_rest_list_rerun gene_knockout_TU_ID_rest_list_rerun2 --suffix gene_knockout_TU_ID_rest_list_rerun12_seed10 --lineage-seed 10
+echo "Extracting growth rates for p_list..."
+#[rerun | seed=10]
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
+    --all --projects gene_knockout_p_list \
+    --suffix gene_knockout_p_list --lineage-seeds 100 101
 
 # # #[rerun | seed=11]
 # # python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py --all --save-timeseries --projects gene_knockout_TU_ID_rest_list_rerun gene_knockout_TU_ID_rest_list_rerun2 --suffix gene_knockout_TU_ID_rest_list_rerun12_seed11 --lineage-seed 11
