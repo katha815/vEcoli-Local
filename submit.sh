@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=gene_knockout_operon_off_462
+#SBATCH --job-name=gene_knockout_leftover_rerun3
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=slurm_logs/gene_knockout_operon_off_462.%j.out
+#SBATCH --output=slurm_logs/gene_knockout_leftover_rerun3.%j.out
 #SBATCH --mem=200G
-#SBATCH --cpus-per-task=24
+#SBATCH --cpus-per-task=20
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
@@ -34,8 +34,12 @@ module list       # Print loaded modules
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-echo "Run gene knockout for 462 imported genes with operon off..."
-python runscripts/workflow.py --config configs/N_gene_knockout_operon_off.json
+echo "Run for 40 trial gene knockout for 16 generations with 5 diffferent media conditions..."
+python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_basal.json
+python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_aa.json
+python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_accetate.json
+python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_succinate.json
+python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_no_ox.json
 
 # Resume workflow for previous job ended because  if time limit.
 # python runscripts/workflow.py --config configs/N_gene_knockout_leftover.json

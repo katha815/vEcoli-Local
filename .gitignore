@@ -18,6 +18,7 @@ out/
 data/
 reading/results/
 surrogate/results/
+surrogate/train_data/
 
 # User files #
 ################
@@ -57,6 +58,12 @@ data/marA_binding/gene_fc.csv
 configs/test_configs/test_export.json
 /notebooks/test_files/
 cache/
+
+# Detected big files #
+#####################
+reading/imported/df_single_ko.pkl
+surrogate/train_data/default_ko_training_dataset.csv
+surrogate/train_data/default_ko_training_dataset462.csv
 
 # Nextflow files #
 ##################

@@ -1,0 +1,352 @@
+go_term,gene_count,percentage
+cytoplasm,63,67.02127659574468
+cytosol,62,65.95744680851064
+protein binding,33,35.1063829787234
+identical protein binding,24,25.53191489361702
+protein homodimerization activity,19,20.212765957446805
+ATP binding,14,14.893617021276595
+translation,14,14.893617021276595
+structural constituent of ribosome,13,13.829787234042554
+cytoplasmic translation,13,13.829787234042554
+catalytic activity,11,11.702127659574469
+magnesium ion binding,11,11.702127659574469
+cytosolic large ribosomal subunit,10,10.638297872340425
+ribosome,10,10.638297872340425
+zinc ion binding,8,8.51063829787234
+membrane,8,8.51063829787234
+nucleotide binding,7,7.446808510638298
+plasma membrane,7,7.446808510638298
+L-lysine biosynthetic process,7,7.446808510638298
+aminoacyl-tRNA ligase activity,6,6.382978723404255
+tRNA aminoacylation for protein translation,6,6.382978723404255
+hydrogen sulfide biosynthetic process,6,6.382978723404255
+L-glutamine metabolic process,5,5.319148936170213
+L-histidine biosynthetic process,5,5.319148936170213
+L-arginine biosynthetic process,5,5.319148936170213
+sulfate assimilation,5,5.319148936170213
+'de novo' pyrimidine nucleobase biosynthetic process,5,5.319148936170213
+'de novo' UMP biosynthetic process,5,5.319148936170213
+NAD binding,4,4.25531914893617
+peptidoglycan biosynthetic process,4,4.25531914893617
+pyridoxal phosphate binding,4,4.25531914893617
+L-tryptophan biosynthetic process,4,4.25531914893617
+lipopolysaccharide transport,4,4.25531914893617
+RNA binding,4,4.25531914893617
+amino acid biosynthetic process,4,4.25531914893617
+NADP binding,4,4.25531914893617
+chorismate biosynthetic process,4,4.25531914893617
+pentosyltransferase activity,3,3.1914893617021276
+DNA damage response,3,3.1914893617021276
+oxidoreductase activity,3,3.1914893617021276
+sulfur compound metabolic process,3,3.1914893617021276
+small ribosomal subunit,3,3.1914893617021276
+transporter complex,3,3.1914893617021276
+transmembrane transport,3,3.1914893617021276
+transferase activity,3,3.1914893617021276
+ATP-binding cassette (ABC) transporter complex,3,3.1914893617021276
+rRNA binding,3,3.1914893617021276
+carbamoyl-phosphate synthase (glutamine-hydrolyzing) activity,3,3.1914893617021276
+carboxylic acid metabolic process,3,3.1914893617021276
+aromatic amino acid family biosynthetic process,3,3.1914893617021276
+cytosolic small ribosomal subunit,3,3.1914893617021276
+ribosomal large subunit assembly,3,3.1914893617021276
+large ribosomal subunit,3,3.1914893617021276
+glycosyltransferase activity,3,3.1914893617021276
+lipid A biosynthetic process,3,3.1914893617021276
+aminoacyl-tRNA metabolism involved in translational fidelity,3,3.1914893617021276
+isoprenoid biosynthetic process,3,3.1914893617021276
+aminoacyl-tRNA deacylase activity,3,3.1914893617021276
+lyase activity,3,3.1914893617021276
+amino acid metabolic process,3,3.1914893617021276
+Gram-negative-bacterium-type cell outer membrane assembly,3,3.1914893617021276
+L-phenylalanine biosynthetic process,3,3.1914893617021276
+GTPase activity,3,3.1914893617021276
+sulfite reductase (NADPH) activity,2,2.127659574468085
+GTP binding,2,2.127659574468085
+L-valine biosynthetic process,2,2.127659574468085
+L-tryptophan metabolic process,2,2.127659574468085
+L-tyrosine biosynthetic process,2,2.127659574468085
+FMN binding,2,2.127659574468085
+pyrimidine nucleobase biosynthetic process,2,2.127659574468085
+ribosome binding,2,2.127659574468085
+ribosomal small subunit assembly,2,2.127659574468085
+pyridoxine biosynthetic process,2,2.127659574468085
+protein-containing complex,2,2.127659574468085
+sulfite reductase complex (NADPH),2,2.127659574468085
+sulfate adenylyltransferase (ATP) activity,2,2.127659574468085
+polyprenol biosynthetic process,2,2.127659574468085
+prenyltransferase activity,2,2.127659574468085
+ubiquinone biosynthetic process,2,2.127659574468085
+L-serine biosynthetic process,2,2.127659574468085
+NAD+ binding,2,2.127659574468085
+iron-sulfur cluster binding,2,2.127659574468085
+hydrolase activity,2,2.127659574468085
+imidazoleglycerol-phosphate synthase complex,2,2.127659574468085
+lipid translocation,2,2.127659574468085
+"isopentenyl diphosphate biosynthetic process, methylerythritol 4-phosphate pathway",2,2.127659574468085
+anthranilate synthase activity,2,2.127659574468085
+"acyltransferase activity, transferring groups other than amino-acyl groups",2,2.127659574468085
+metal ion binding,2,2.127659574468085
+amino acid binding,2,2.127659574468085
+large ribosomal subunit rRNA binding,2,2.127659574468085
+hydro-lyase activity,2,2.127659574468085
+fatty acid biosynthetic process,2,2.127659574468085
+glutaminase activity,2,2.127659574468085
+imidazoleglycerol-phosphate synthase activity,2,2.127659574468085
+carbamoyl-phosphate synthase complex,2,2.127659574468085
+chorismate mutase activity,2,2.127659574468085
+chorismate metabolic process,2,2.127659574468085
+carboxyl- or carbamoyltransferase activity,2,2.127659574468085
+carboxy-lyase activity,2,2.127659574468085
+response to radiation,2,2.127659574468085
+L-leucine biosynthetic process,2,2.127659574468085
+pyrimidine nucleotide biosynthetic process,2,2.127659574468085
+response to antibiotic,2,2.127659574468085
+L-cysteine biosynthetic process,2,2.127659574468085
+tetrahydrofolate interconversion,2,2.127659574468085
+tetrahydrofolate biosynthetic process,2,2.127659574468085
+"4 iron, 4 sulfur cluster binding",2,2.127659574468085
+3-dehydroquinate dehydratase activity,1,1.0638297872340425
+3-dehydroquinate synthase activity,1,1.0638297872340425
+3-deoxy-7-phosphoheptulonate synthase activity,1,1.0638297872340425
+3-deoxy-manno-octulosonate-8-phosphatase activity,1,1.0638297872340425
+3-isopropylmalate dehydratase activity,1,1.0638297872340425
+3-isopropylmalate dehydratase complex,1,1.0638297872340425
+3-oxoacyl-[acyl-carrier-protein] reductase (NADPH) activity,1,1.0638297872340425
+4-hydroxy-tetrahydrodipicolinate reductase activity,1,1.0638297872340425
+4-hydroxy-tetrahydrodipicolinate synthase activity,1,1.0638297872340425
+ABC-type transporter activity,1,1.0638297872340425
+ABC-type xenobiotic transporter activity,1,1.0638297872340425
+ATP hydrolysis activity,1,1.0638297872340425
+ATP phosphoribosyltransferase activity,1,1.0638297872340425
+ATPase-coupled lipid transmembrane transporter activity,1,1.0638297872340425
+tRNA aminoacylation,1,1.0638297872340425
+tRNA binding,1,1.0638297872340425
+tRNA queuosine(34) biosynthetic process,1,1.0638297872340425
+terpenoid biosynthetic process,1,1.0638297872340425
+tetrahydrobiopterin biosynthetic process,1,1.0638297872340425
+tetrahydrofolate metabolic process,1,1.0638297872340425
+thiamine biosynthetic process,1,1.0638297872340425
+thiamine pyrophosphate binding,1,1.0638297872340425
+transaminase activity,1,1.0638297872340425
+transcription antitermination,1,1.0638297872340425
+"transferase activity, transferring alkyl or aryl (other than methyl) groups",1,1.0638297872340425
+L-allo-threonine aldolase activity,1,1.0638297872340425
+L-asparagine biosynthetic process,1,1.0638297872340425
+L-aspartate biosynthetic process,1,1.0638297872340425
+L-aspartate:2-oxoglutarate transaminase activity,1,1.0638297872340425
+"L-glutamate N-acetyltransferase activity, acting on acetyl-CoA as donor",1,1.0638297872340425
+"L-glutamate N-acetyltransferase activity, acting on acetyl-L-ornithine as donor",1,1.0638297872340425
+L-glutamine biosynthetic process,1,1.0638297872340425
+L-homoserine biosynthetic process,1,1.0638297872340425
+L-isoleucine:2-oxoglutarate transaminase activity,1,1.0638297872340425
+L-leucine:2-oxoglutarate transaminase activity,1,1.0638297872340425
+L-methionine biosynthetic process,1,1.0638297872340425
+pyrimidine ribonucleoside biosynthetic process,1,1.0638297872340425
+pyrophosphatase activity,1,1.0638297872340425
+pyrroline-5-carboxylate reductase activity,1,1.0638297872340425
+quinolinate catabolic process,1,1.0638297872340425
+response to osmotic stress,1,1.0638297872340425
+response to oxidative stress,1,1.0638297872340425
+response to reactive oxygen species,1,1.0638297872340425
+riboflavin reductase (NADPH) activity,1,1.0638297872340425
+ribose-5-phosphate isomerase activity,1,1.0638297872340425
+"3,4-dihydroxybenzoate biosynthetic process",1,1.0638297872340425
+aspartate carbamoyltransferase activity,1,1.0638297872340425
+aspartate carbamoyltransferase complex,1,1.0638297872340425
+aspartate family amino acid biosynthetic process,1,1.0638297872340425
+aspartate-ammonia ligase activity,1,1.0638297872340425
+aspartate-semialdehyde dehydrogenase activity,1,1.0638297872340425
+biotin biosynthetic process,1,1.0638297872340425
+branched-chain amino acid biosynthetic process,1,1.0638297872340425
+branched-chain amino acid metabolic process,1,1.0638297872340425
+branched-chain-amino-acid:2-oxoglutarate transaminase activity,1,1.0638297872340425
+carbamoyl-phosphate synthase (ammonia) activity,1,1.0638297872340425
+carbon utilization,1,1.0638297872340425
+"carbon-oxygen lyase activity, acting on phosphates",1,1.0638297872340425
+carbonate dehydratase activity,1,1.0638297872340425
+carboxylic acid biosynthetic process,1,1.0638297872340425
+cardiolipin binding,1,1.0638297872340425
+cell morphogenesis,1,1.0638297872340425
+cell outer membrane,1,1.0638297872340425
+cellular response to oxidative stress,1,1.0638297872340425
+cobalamin biosynthetic process,1,1.0638297872340425
+cobalt ion binding,1,1.0638297872340425
+coenzyme A biosynthetic process,1,1.0638297872340425
+cytidylyltransferase activity,1,1.0638297872340425
+cytosolic valyl-tRNA aminoacylation,1,1.0638297872340425
+deacetylase activity,1,1.0638297872340425
+diaminopimelate decarboxylase activity,1,1.0638297872340425
+diaminopimelate epimerase activity,1,1.0638297872340425
+dihydrolipoyllysine-residue succinyltransferase activity,1,1.0638297872340425
+dihydroneopterin aldolase activity,1,1.0638297872340425
+dihydroxy-acid dehydratase activity,1,1.0638297872340425
+"ditrans,polycis-polyprenyl diphosphate synthase [(2E,6E)-farnesyl diphosphate specific] activity",1,1.0638297872340425
+"ditrans,polycis-undecaprenyl-diphosphate synthase [(2E,6E)-farnesyl-diphosphate specific] activity",1,1.0638297872340425
+division septum,1,1.0638297872340425
+enzyme activator activity,1,1.0638297872340425
+exonuclease activity,1,1.0638297872340425
+extrinsic component of plasma membrane,1,1.0638297872340425
+fatty acid elongation,1,1.0638297872340425
+flavin adenine dinucleotide binding,1,1.0638297872340425
+folic acid-containing compound metabolic process,1,1.0638297872340425
+four-way junction DNA binding,1,1.0638297872340425
+glucosamine-1-phosphate N-acetyltransferase activity,1,1.0638297872340425
+glutamine synthetase activity,1,1.0638297872340425
+glutamine-tRNA ligase activity,1,1.0638297872340425
+glutaminyl-tRNA aminoacylation,1,1.0638297872340425
+glutamyl-tRNA aminoacylation,1,1.0638297872340425
+glycine biosynthetic process,1,1.0638297872340425
+glycine catabolic process,1,1.0638297872340425
+glycine hydroxymethyltransferase activity,1,1.0638297872340425
+glycolipid transfer activity,1,1.0638297872340425
+glycolipid translocation,1,1.0638297872340425
+glycolipid transport,1,1.0638297872340425
+guanosine tetraphosphate binding,1,1.0638297872340425
+heme binding,1,1.0638297872340425
+homoserine O-acetyltransferase activity,1,1.0638297872340425
+homoserine O-succinyltransferase activity,1,1.0638297872340425
+"hydrolase activity, acting on ester bonds",1,1.0638297872340425
+indole-3-glycerol-phosphate synthase activity,1,1.0638297872340425
+isoleucine-tRNA ligase activity,1,1.0638297872340425
+isoleucyl-tRNA aminoacylation,1,1.0638297872340425
+leucine-tRNA ligase activity,1,1.0638297872340425
+leucyl-tRNA aminoacylation,1,1.0638297872340425
+ligase activity,1,1.0638297872340425
+"ligase activity, forming carbon-nitrogen bonds",1,1.0638297872340425
+lipid binding,1,1.0638297872340425
+lipid biosynthetic process,1,1.0638297872340425
+lipid transport,1,1.0638297872340425
+NAD+ biosynthetic process,1,1.0638297872340425
+NADP+ binding,1,1.0638297872340425
+O-phospho-L-serine:2-oxoglutarate transaminase activity,1,1.0638297872340425
+RNA catabolic process,1,1.0638297872340425
+"RNA exonuclease activity, producing 5'-phosphomonoesters",1,1.0638297872340425
+RNA metabolic process,1,1.0638297872340425
+"UDP-2,3-diacylglucosamine hydrolase activity",1,1.0638297872340425
+UDP-N-acetylglucosamine biosynthetic process,1,1.0638297872340425
+UDP-N-acetylglucosamine diphosphorylase activity,1,1.0638297872340425
+UTP biosynthetic process,1,1.0638297872340425
+acetate CoA-transferase complex,1,1.0638297872340425
+acetyl-CoA carboxylase activity,1,1.0638297872340425
+acetyl-CoA carboxylase complex,1,1.0638297872340425
+acetylornithine deacetylase activity,1,1.0638297872340425
+acyltransferase activity,1,1.0638297872340425
+adenylylsulfate kinase activity,1,1.0638297872340425
+all-trans-octaprenyl-diphosphate synthase activity,1,1.0638297872340425
+alpha-amino acid metabolic process,1,1.0638297872340425
+amidophosphoribosyltransferase activity,1,1.0638297872340425
+ammonia assimilation cycle,1,1.0638297872340425
+anthranilate phosphoribosyltransferase activity,1,1.0638297872340425
+argininosuccinate lyase activity,1,1.0638297872340425
+lipid-linked peptidoglycan transport,1,1.0638297872340425
+lipid-linked peptidoglycan transporter activity,1,1.0638297872340425
+lipoic acid binding,1,1.0638297872340425
+lipopolysaccharide binding,1,1.0638297872340425
+lipopolysaccharide biosynthetic process,1,1.0638297872340425
+lipopolysaccharide core region biosynthetic process,1,1.0638297872340425
+lipopolysaccharide floppase activity,1,1.0638297872340425
+long-chain fatty acid biosynthetic process,1,1.0638297872340425
+mRNA 5'-UTR binding,1,1.0638297872340425
+mRNA binding,1,1.0638297872340425
+mRNA regulatory element binding translation repressor activity,1,1.0638297872340425
+maintenance of translational fidelity,1,1.0638297872340425
+malonyl-CoA biosynthetic process,1,1.0638297872340425
+manganese ion binding,1,1.0638297872340425
+methylenetetrahydrofolate reductase (NADH) activity,1,1.0638297872340425
+methylenetetrahydrofolate reductase [NAD(P)H] activity,1,1.0638297872340425
+methyltransferase activity,1,1.0638297872340425
+molecular adaptor activity,1,1.0638297872340425
+negative regulation of cytoplasmic translational initiation,1,1.0638297872340425
+negative regulation of translation,1,1.0638297872340425
+negative regulation of translational initiation,1,1.0638297872340425
+nicotinate-nucleotide diphosphorylase (carboxylating) activity,1,1.0638297872340425
+nitrogen utilization,1,1.0638297872340425
+nucleic acid binding,1,1.0638297872340425
+nucleobase-containing small molecule interconversion,1,1.0638297872340425
+nucleoside diphosphate kinase activity,1,1.0638297872340425
+nucleoside triphosphate biosynthetic process,1,1.0638297872340425
+nucleotidyltransferase activity,1,1.0638297872340425
+one-carbon metabolic process,1,1.0638297872340425
+orotate phosphoribosyltransferase activity,1,1.0638297872340425
+orotidine-5'-phosphate decarboxylase activity,1,1.0638297872340425
+outer membrane-bounded periplasmic space,1,1.0638297872340425
+"oxidoreductase activity, acting on CH or CH2 groups, NAD or NADP as acceptor",1,1.0638297872340425
+"oxidoreductase activity, acting on the CH-OH group of donors, NAD or NADP as acceptor",1,1.0638297872340425
+"oxidoreductase activity, acting on the aldehyde or oxo group of donors, NAD or NADP as acceptor",1,1.0638297872340425
+oxoglutarate dehydrogenase complex,1,1.0638297872340425
+pantothenate catabolic process,1,1.0638297872340425
+pentose-phosphate shunt,1,1.0638297872340425
+"pentose-phosphate shunt, non-oxidative branch",1,1.0638297872340425
+periplasmic space,1,1.0638297872340425
+phosphatidate cytidylyltransferase activity,1,1.0638297872340425
+phosphoadenylyl-sulfate reductase (thioredoxin) activity,1,1.0638297872340425
+phosphopantothenate--cysteine ligase activity,1,1.0638297872340425
+phosphopantothenoylcysteine decarboxylase activity,1,1.0638297872340425
+phosphoribosyl-AMP cyclohydrolase activity,1,1.0638297872340425
+phosphoribosyl-ATP diphosphatase activity,1,1.0638297872340425
+phosphoribosylanthranilate isomerase activity,1,1.0638297872340425
+phosphorylation,1,1.0638297872340425
+porphyrin-containing compound biosynthetic process,1,1.0638297872340425
+positive regulation of translational fidelity,1,1.0638297872340425
+precorrin-2 dehydrogenase activity,1,1.0638297872340425
+prephenate dehydratase activity,1,1.0638297872340425
+"transferase activity, transferring phosphorus-containing groups",1,1.0638297872340425
+translational initiation,1,1.0638297872340425
+tricarboxylic acid cycle,1,1.0638297872340425
+tryptophan synthase activity,1,1.0638297872340425
+tryptophan-tRNA ligase activity,1,1.0638297872340425
+tryptophanyl-tRNA aminoacylation,1,1.0638297872340425
+tyrosine-tRNA ligase activity,1,1.0638297872340425
+tyrosyl-tRNA aminoacylation,1,1.0638297872340425
+uroporphyrin-III C-methyltransferase activity,1,1.0638297872340425
+valine-tRNA ligase activity,1,1.0638297872340425
+valyl-tRNA aminoacylation,1,1.0638297872340425
+xenobiotic transport,1,1.0638297872340425
+CTP biosynthetic process,1,1.0638297872340425
+L-methionine metabolic process,1,1.0638297872340425
+L-proline biosynthetic process,1,1.0638297872340425
+L-serine catabolic process,1,1.0638297872340425
+L-serine metabolic process,1,1.0638297872340425
+L-threonine biosynthetic process,1,1.0638297872340425
+L-tyrosine:2-oxoglutarate transaminase activity,1,1.0638297872340425
+L-valine:2-oxoglutarate transaminase activity,1,1.0638297872340425
+prephenate dehydrogenase (NAD+) activity,1,1.0638297872340425
+prephenate dehydrogenase (NADP+) activity,1,1.0638297872340425
+protein dimerization activity,1,1.0638297872340425
+protein heterodimerization activity,1,1.0638297872340425
+protein homotetramerization,1,1.0638297872340425
+protein homotrimerization,1,1.0638297872340425
+protein-folding chaperone binding,1,1.0638297872340425
+protoporphyrin ferrochelatase activity,1,1.0638297872340425
+purine nucleobase biosynthetic process,1,1.0638297872340425
+purine nucleotide biosynthetic process,1,1.0638297872340425
+pyridoxal 5'-phosphate biosynthetic process,1,1.0638297872340425
+D-alanine-D-alanine ligase activity,1,1.0638297872340425
+D-ribose metabolic process,1,1.0638297872340425
+DNA endonuclease activity,1,1.0638297872340425
+DNA metabolic process,1,1.0638297872340425
+FAD binding,1,1.0638297872340425
+CDP-diacylglycerol biosynthetic process,1,1.0638297872340425
+GTP biosynthetic process,1,1.0638297872340425
+GTP cyclohydrolase I activity,1,1.0638297872340425
+Gram-negative-bacterium-type cell wall biogenesis,1,1.0638297872340425
+Kdo transferase activity,1,1.0638297872340425
+Kdo2-lipid A biosynthetic process,1,1.0638297872340425
+ribosomal small subunit biogenesis,1,1.0638297872340425
+3'-5'-RNA exonuclease activity,1,1.0638297872340425
+2-C-methyl-D-erythritol 4-phosphate cytidylyltransferase activity,1,1.0638297872340425
+shikimate kinase activity,1,1.0638297872340425
+single-stranded DNA 3'-5' DNA exonuclease activity,1,1.0638297872340425
+siroheme biosynthetic process,1,1.0638297872340425
+sirohydrochlorin ferrochelatase activity,1,1.0638297872340425
+small molecule binding,1,1.0638297872340425
+"2,3,4,5-tetrahydropyridine-2,6-dicarboxylate N-succinyltransferase activity",1,1.0638297872340425
+"2 iron, 2 sulfur cluster binding",1,1.0638297872340425
+1-deoxy-D-xylulose-5-phosphate synthase activity,1,1.0638297872340425
+sulfate adenylyltransferase complex (ATP),1,1.0638297872340425
+1-(5-phosphoribosyl)-5-[(5-phosphoribosylamino)methylideneamino]imidazole-4-carboxamide isomerase activity,1,1.0638297872340425
+"sulfate assimilation, phosphoadenylyl sulfate reduction by phosphoadenylyl-sulfate reductase (thioredoxin)",1,1.0638297872340425
+'de novo' NAD+ biosynthetic process from L-aspartate,1,1.0638297872340425
+'de novo' L-methionine biosynthetic process,1,1.0638297872340425
+'de novo' IMP biosynthetic process,1,1.0638297872340425
