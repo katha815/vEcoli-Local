@@ -49,9 +49,9 @@ module list       # Print loaded modules
 
 # echo "Extracting growth rates for 16 generation run..."
 # 
-python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
-    --all --projects gene_ko_40trial_seed100_acetate --save-timeseries\
-    --suffix gene_ko_40trial_acetate --lineage-seeds 100 101
+# python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
+#     --all --projects gene_ko_40trial_seed100_acetate --save-timeseries\
+#     --suffix gene_ko_40trial_acetate --lineage-seeds 100 101
 
 # echo "Preprocessing growth rate to fold change data (all parquet files)..."
 # GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt
