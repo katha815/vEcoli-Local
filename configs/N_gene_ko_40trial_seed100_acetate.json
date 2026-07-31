@@ -1,5 +1,5 @@
 {
-    "experiment_id": "gene_ko_40trial_seed100_accetate",
+    "experiment_id": "gene_ko_40trial_seed100_acetate",
     "sim_data_path": "/user/home/il22158/work/vEcoli/out/gene_knockout_test1/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
@@ -15,12 +15,12 @@
         "out_dir": "out"
     },
     "skip_baseline": true,
-    "condition": "accetate",
+    "condition": "acetate",
     "variants": {
         "gene_knockout": {
             "genes_to_knockout": {
                 "value":[
-                  ["EG10003"],
+                ["EG10003"],
                 ["EG10013"],
                 ["EG10028"],
                 ["EG10030"],

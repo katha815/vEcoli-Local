@@ -239,7 +239,10 @@ def main():
         "including projects that stop early before the nominal final generation.\n"
         "Use --lineage-seeds to extract the same project across multiple lineage seeds.\n"
         "Use --save-timeseries to also save the full downsampled timeseries for all variants and generations as a parquet file.\n"
-        "Example: python growth_rate_extract.py --all --projects gene_ko_trial40_seed101 --suffix seed101 --lineage-seeds 101 102 --save-timeseries"
+        "Example: \
+        python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
+             --all --projects gene_knockout_p_list \
+             --suffix gene_knockout_p_list --lineage-seeds 100 101"
     )
     parser.add_argument(
         "--save-timeseries",
