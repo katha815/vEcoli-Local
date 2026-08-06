@@ -1,20 +1,20 @@
 {
     "experiment_id": "gene_ko_40trial_seed100_succinate",
-    "sim_data_path": "/user/home/il22158/work/vEcoli/out/gene_knockout_test1/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
-        "cpus": 20
+        "cpus": 24
     },
+    "sim_data_path": null,
     "emit_step": 60,
     "lineage_seed": 100,
-    "generations": 16,
+    "generations": 24,
     "n_init_sims": 2,
     "single_daughters": true,
     "emitter": "parquet",
     "emitter_arg": {
         "out_dir": "out"
     },
-    "skip_baseline": true,
+    "skip_baseline": false,
     "condition": "succinate",
     "variants": {
         "gene_knockout": {
