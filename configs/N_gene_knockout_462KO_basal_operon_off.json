@@ -1,5 +1,5 @@
 {
-    "experiment_id": "gene_knockout_operon_off_462",
+    "experiment_id": "gene_knockout_462KO_basal_operon_off",
     "sim_data_path": "/user/home/il22158/work/vEcoli/out/gene_knockout_test1/parca/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
@@ -7,7 +7,7 @@
         "operon": false
     },
     "emit_step": 60,
-    "generations": 8,
+    "generations": 12,
     "n_init_sims": 2,
     "lineage_seed": 100,
     "single_daughters": true,

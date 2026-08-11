@@ -1,15 +1,15 @@
 #!/bin/bash
-#SBATCH --job-name=gene_ko_40trial_succinate_extended
+#SBATCH --job-name=p5_462KO_basal_operon_on
 #SBATCH --partition=compute
-#SBATCH --time=3-00:00:00
+#SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=/user/home/il22158/work/slurm_logs/gene_ko_40trial_succinate_extended.%j.out
+#SBATCH --output=/user/home/il22158/work/slurm_logs/p5_462KO_basal_operon_on.%j.out
 #SBATCH --mem=200G
 #SBATCH --cpus-per-task=24
 
 # == Work directory setup ==
-WORK_DIR="/user/home/il22158/work/vEcoli"
+WORK_DIR="/user/home/il22158/work/vEcoli_auto_workflow"
 cd "$WORK_DIR" || exit
 
 # == Python environment setup ==
@@ -34,11 +34,11 @@ module list       # Print loaded modules
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-echo "Re-run for 40 trial gene knockout for 24 generations with succinate conditions..."
-# # python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_basal.json
+echo "Re-run part 5 of 462 gene KO in basal operon on conditions..."
+python runscripts/workflow.py --config configs/N_gene_knockout_462KO_basal_operon_on_p5.json
 # # python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_aa.json
 # python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_acetate.json
-python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_succinate.json
+# python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_succinate.json
 # python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_no_ox.json
 
 # Resume workflow for previous job ended because  if time limit.
@@ -47,11 +47,11 @@ python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_succina
 # echo "Run gene screen for the 3rd KO test..."
 # python reading/gene_screen.py --project gene_knockout_3_round_test --lineage-seed 100 101 --variants $(seq 0 50) --gene-list surrogate/third_round_tested_gene_list.txt
 
-# echo "Extracting growth rates for 16 generation run..."
-# 
+# echo "Extracting growth rates for extended succinate simulation..."
+
 # python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
-#     --all --projects gene_ko_40trial_seed100_acetate --save-timeseries\
-#     --suffix gene_ko_40trial_acetate --lineage-seeds 100 101
+#     --all --projects gene_ko_40trial_seed100_succinate --save-timeseries\
+#     --suffix gene_ko_40trial_succinate_extended --lineage-seeds 100 101
 
 # echo "Preprocessing growth rate to fold change data (all parquet files)..."
 # GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt
