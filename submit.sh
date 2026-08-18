@@ -1,4 +1,5 @@
 #!/bin/bash
+#SBATCH --exclusive
 #SBATCH --job-name=p5_462KO_basal_operon_on
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
@@ -9,7 +10,7 @@
 #SBATCH --cpus-per-task=24
 
 # == Work directory setup ==
-WORK_DIR="/user/home/il22158/work/vEcoli_auto_workflow"
+WORK_DIR="/user/home/il22158/work/vEcoli"
 cd "$WORK_DIR" || exit
 
 # == Python environment setup ==
