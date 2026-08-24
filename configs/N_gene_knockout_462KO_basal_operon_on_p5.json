@@ -3,7 +3,7 @@
     "sim_data_path": "/user/home/il22158/work/vEcoli/out/kb/simData.cPickle",
     "suffix_time": false,
     "parca_options": {
-        "cpus": 24,
+        "cpus": 16,
         "operon": true
     },
     "emit_step": 60,

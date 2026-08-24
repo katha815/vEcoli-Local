@@ -1,24 +1,27 @@
 #!/bin/bash
-#SBATCH --exclusive
 #SBATCH --job-name=p5_462KO_basal_operon_on
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
 #SBATCH --output=/user/home/il22158/work/slurm_logs/p5_462KO_basal_operon_on.%j.out
-#SBATCH --mem=200G
-#SBATCH --cpus-per-task=24
+#SBATCH --mem=100G
+#SBATCH --cpus-per-task=16
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
 cd "$WORK_DIR" || exit
 
 # == Python environment setup ==
-source "$WORK_DIR/.venv/bin/activate"
+source "$WORK_DIR/.venv/bin/activate" 
 
 # == Module setup ==
 module load languages/java-sdk/22.0.2 openssh/9.7p1-uyheegq git
 module list       # Print loaded modules
+
+# == Nextflow version control ==
+nextflow -version
+#Stable nextflow version: 25.10.2 
 
 # === VERSION CONTROL ===
 # git add. #stages changes under the current directory 
