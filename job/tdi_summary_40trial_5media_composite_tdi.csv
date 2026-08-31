@@ -1,0 +1,6 @@
+Media,Proposed generation window,Biomass mean composite TDI,Growth-rate mean composite TDI,Stabilization behavior
+basal,4-12,0.049066612,0.101166653,Occurs at generation 1-3.
+with_aa,5-13,0.054638019,0.118986662,Occurs at  generation 1-4.
+no_ox,6-14,0.054159049,0.120030916,Occurs at generation 1-3.
+succinate,13-20,0.049491752,0.116245757,Occurs at generation 1-3.
+acetate,6-14,0.049018581,0.124079187,Occurs at generation 1-3.

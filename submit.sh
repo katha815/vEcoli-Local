@@ -1,12 +1,13 @@
 #!/bin/bash
-#SBATCH --job-name=p5_462KO_basal_operon_on
+
+#SBATCH --job-name=growth_rate_extract_462KO_basal_operon_on
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=/user/home/il22158/work/slurm_logs/p5_462KO_basal_operon_on.%j.out
-#SBATCH --mem=100G
-#SBATCH --cpus-per-task=16
+#SBATCH --output=/user/home/il22158/work/slurm_logs/growth_rate_extract_462KO_basal_operon_on.%j.out
+#SBATCH --mem=50G
+#SBATCH --cpus-per-task=10
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
@@ -38,8 +39,8 @@ nextflow -version
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
 # # change total number of samples to 1/n
 
-echo "Re-run part 5 of 462 gene KO in basal operon on conditions..."
-python runscripts/workflow.py --config configs/N_gene_knockout_462KO_basal_operon_on_p5.json
+# echo "Re-run part 1 of 462 gene KO in basal operon on conditions..."
+# python runscripts/workflow.py --config configs/N_gene_knockout_462KO_basal_operon_on_p1.json
 # # python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_aa.json
 # python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_acetate.json
 # python runscripts/workflow.py --config configs/N_gene_ko_40trial_seed100_succinate.json
@@ -53,9 +54,25 @@ python runscripts/workflow.py --config configs/N_gene_knockout_462KO_basal_opero
 
 # echo "Extracting growth rates for extended succinate simulation..."
 
-# python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
-#     --all --projects gene_ko_40trial_seed100_succinate --save-timeseries\
-#     --suffix gene_ko_40trial_succinate_extended --lineage-seeds 100 101
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
+    --all --projects gene_knockout_462KO_basal_operon_on_p1 --save-timeseries\
+    --suffix gene_knockout_462KO_basal_operon_on_p1 --lineage-seeds 100 101
+
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
+    --all --projects gene_knockout_462KO_basal_operon_on_p2 --save-timeseries\
+    --suffix gene_knockout_462KO_basal_operon_on_p2 --lineage-seeds 100 101
+
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
+    --all --projects gene_knockout_462KO_basal_operon_on_p3 --save-timeseries\
+    --suffix gene_knockout_462KO_basal_operon_on_p3 --lineage-seeds 100 101
+
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
+    --all --projects gene_knockout_462KO_basal_operon_on_p4 --save-timeseries\
+    --suffix gene_knockout_462KO_basal_operon_on_p4 --lineage-seeds 100 101
+
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
+    --all --projects gene_knockout_462KO_basal_operon_on_p5 --save-timeseries\
+    --suffix gene_knockout_462KO_basal_operon_on_p5 --lineage-seeds 100 101
 
 # echo "Preprocessing growth rate to fold change data (all parquet files)..."
 # GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt

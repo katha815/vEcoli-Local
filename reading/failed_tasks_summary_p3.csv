@@ -1,0 +1,5 @@
+reason,failed_tasks
+IndexError: cannot do a non-empty take from an empty axes.,102
+ecoli_master_sim.py: error: argument --initial_global_time: expected one argument,31
+Negative molecule levels not allowed,24
+FBA infeasible (GLP_NOFEAS),7
