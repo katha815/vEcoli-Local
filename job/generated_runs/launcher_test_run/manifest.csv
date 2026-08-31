@@ -1,0 +1,2 @@
+gene,media,project,generation_start,generation_end,launcher_command,config_path,script_path
+EG10001,with_aa,gene_knockout_EG10001_with_aa,5,13,job/write_for_new_job.py --genes-file /tmp/one_gene_ko.txt --media with_aa,/user/home/il22158/work/vEcoli/job/generated_runs/launcher/configs/gene_knockout_EG10001_with_aa.json,/user/home/il22158/work/vEcoli/job/generated_runs/launcher/slurm/gene_knockout_EG10001_with_aa.sh

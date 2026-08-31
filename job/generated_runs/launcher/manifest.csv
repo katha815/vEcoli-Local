@@ -1,2 +1,0 @@
-gene,media,project,generation_start,generation_end,config_path,script_path
-EG10001,with_aa,gene_knockout_EG10001_with_aa,5,13,/user/home/il22158/work/vEcoli/job/generated_runs/launcher/configs/gene_knockout_EG10001_with_aa.json,/user/home/il22158/work/vEcoli/job/generated_runs/launcher/slurm/gene_knockout_EG10001_with_aa.sh

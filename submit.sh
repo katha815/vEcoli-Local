@@ -6,8 +6,8 @@
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
 #SBATCH --output=/user/home/il22158/work/slurm_logs/growth_rate_extract_462KO_basal_operon_on.%j.out
-#SBATCH --mem=50G
-#SBATCH --cpus-per-task=10
+#SBATCH --mem=20G
+#SBATCH --cpus-per-task=4
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"

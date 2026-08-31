@@ -1,0 +1,31 @@
+{
+  "experiment_id": "gene_knockout_EG11169_succinate",
+  "sim_data_path": "/user/home/il22158/work/vEcoli/out/kb/simData.cPickle",
+  "suffix_time": false,
+  "parca_options": {
+    "cpus": 4,
+    "operon": true
+  },
+  "emit_step": 60,
+  "generations": 20,
+  "n_init_sims": 2,
+  "lineage_seed": 100,
+  "single_daughters": true,
+  "emitter": "parquet",
+  "emitter_arg": {
+    "out_dir": "out"
+  },
+  "skip_baseline": true,
+  "condition": "succinate",
+  "variants": {
+    "gene_knockout": {
+      "genes_to_knockout": {
+        "value": [
+          [
+            "EG11169"
+          ]
+        ]
+      }
+    }
+  }
+}

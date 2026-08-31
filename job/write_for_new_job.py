@@ -17,6 +17,7 @@ import re
 import shlex
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
@@ -64,7 +65,7 @@ def parse_args() -> argparse.Namespace:
             "  python job/write_for_new_job.py\n\n"
             "Where to find results:\n"
             "  Slurm stdout/stderr: /user/home/il22158/work/slurm_logs/<job>.%j.out\n"
-            "  Launcher artifacts: /user/home/il22158/work/vEcoli/job/generated_runs/launcher/\n"
+            "  Launcher artifacts: /user/home/il22158/work/vEcoli/job/generated_runs/launcher/<run-id>/\n"
             "  Workflow output: /user/home/il22158/work/vEcoli/out/<project>/nextflow/\n\n"
         ),
     )
@@ -302,6 +303,7 @@ def submit_job(script_path: Path) -> None:
 def main() -> None:
     args = parse_args()
     launcher_command = " ".join(shlex.quote(arg) for arg in sys.argv)
+    launch_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
     if not args.template_config.exists():
         raise FileNotFoundError(f"Template config not found: {args.template_config}")
@@ -320,7 +322,7 @@ def main() -> None:
     selected_media = set(args.media)
     media_windows = load_media_windows(args.media_windows, selected_media)
 
-    run_dir = args.output_dir / "launcher"
+    run_dir = args.output_dir / "launcher" / launch_id
     configs_dir = run_dir / "configs"
     scripts_dir = run_dir / "slurm"
     run_dir.mkdir(parents=True, exist_ok=True)
