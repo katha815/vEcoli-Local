@@ -1,0 +1,8 @@
+``ecoli.variants.gene_knockout_N``
+==================================
+.. automodule:: ecoli.variants.gene_knockout_N
+   :private-members:
+   :exclude-members: _abc_impl
+   :members:
+   :undoc-members:
+   :show-inheritance:
