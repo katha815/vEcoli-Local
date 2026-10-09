@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Generate and submit one Slurm job per gene/media knockout run.
+"""Generate and submit one Slurm job per gene/media knockout run,
+and also performs growth-rate extraction for each resulting project folder,
+with designed generation windows.
 
 Each submitted Slurm job:
 1. writes a temporary config derived from the base template,

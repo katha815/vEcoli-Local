@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --job-name=growth_rate_extract_462KO_basal_operon_on
-#SBATCH --partition=compute
-#SBATCH --time=14-00:00:00
+#SBATCH --job-name=gene_expression_extract_462KO_basal_operon_on
+#SBATCH --partition=short
+#SBATCH --time=3-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=/user/home/il22158/work/slurm_logs/growth_rate_extract_462KO_basal_operon_on.%j.out
+#SBATCH --output=/user/home/il22158/work/slurm_logs/gene_expression_extract_462KO_basal_operon_on.%j.out
 #SBATCH --mem=20G
 #SBATCH --cpus-per-task=4
 
@@ -52,27 +52,49 @@ nextflow -version
 # echo "Run gene screen for the 3rd KO test..."
 # python reading/gene_screen.py --project gene_knockout_3_round_test --lineage-seed 100 101 --variants $(seq 0 50) --gene-list surrogate/third_round_tested_gene_list.txt
 
-# echo "Extracting growth rates for extended succinate simulation..."
+# echo "Extracting gene expression for 462 KO simulation in basal media with operon on..."
+# python reading/gene_expression_extract.py --all --lineage-seeds 100 101 --save-timeseries --suffix first_im
 
-python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
-    --all --projects gene_knockout_462KO_basal_operon_on_p1 --save-timeseries\
-    --suffix gene_knockout_462KO_basal_operon_on_p1 --lineage-seeds 100 101
+# python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
+#     --all --projects gene_knockout_462KO_basal_operon_on_p5 --save-timeseries\
+#     --suffix gene_knockout_462KO_basal_operon_on_p5 --lineage-seeds 100 101
 
-python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
-    --all --projects gene_knockout_462KO_basal_operon_on_p2 --save-timeseries\
-    --suffix gene_knockout_462KO_basal_operon_on_p2 --lineage-seeds 100 101
+#-----Customised Script-----#
+# Check that the KO list really contains 462 entries before launching media-specific extracts.
+# This prints the count for each media and skips any folder that does not exist.
+GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt
+mapfile -t GENE_IDS < "$GENE_LIST"
+MEDIA_LIST=(acetate no_ox succinate with_aa)
 
-python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
-    --all --projects gene_knockout_462KO_basal_operon_on_p3 --save-timeseries\
-    --suffix gene_knockout_462KO_basal_operon_on_p3 --lineage-seeds 100 101
+echo "Extracting baseline media..."
+python reading/growth_rate_extract.py --all \
+  --projects \
+    gene_knockout_462KO_basal_operon_on_p1 \
+    gene_knockout_462KO_basal_operon_on_p2 \
+    gene_knockout_462KO_basal_operon_on_p3 \
+    gene_knockout_462KO_basal_operon_on_p4 \
+    gene_knockout_462KO_basal_operon_on_p5 \
+  --lineage-seeds 100 101 \
+  --suffix gene_knockout_462KO_basal
 
-python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
-    --all --projects gene_knockout_462KO_basal_operon_on_p4 --save-timeseries\
-    --suffix gene_knockout_462KO_basal_operon_on_p4 --lineage-seeds 100 101
+for media in "${MEDIA_LIST[@]}"; do
+  projects=()
+  for gene in "${GENE_IDS[@]}"; do
+    projects+=("gene_knockout_${gene}_${media}")
+  done
 
-python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
-    --all --projects gene_knockout_462KO_basal_operon_on_p5 --save-timeseries\
-    --suffix gene_knockout_462KO_basal_operon_on_p5 --lineage-seeds 100 101
+  echo "Checking ${media}: ${#projects[@]} KO folders expected 462"
+  if [[ "${#projects[@]}" -eq 462 ]]; then
+    echo "the KO number is correct"
+  else
+    echo "WARNING: ${media} has ${#projects[@]} KO folders, not 462"
+  fi
+
+  python reading/growth_rate_extract.py --all \
+    --projects "${projects[@]}" \
+    --lineage-seeds 100 101 \
+    --suffix "gene_knockout_462KO_${media}"
+done
 
 # echo "Preprocessing growth rate to fold change data (all parquet files)..."
 # GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt
