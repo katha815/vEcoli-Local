@@ -185,7 +185,7 @@ def infer_source_group(source_file: str) -> str:
     key = source_file.lower()
     if "tu_id_rest_list_rerun12" in key:
         return "TU_KO"
-    if "102trails" in key or "leftover" in key:
+    if "gene_knockout" in key or "102trails" in key or "leftover" in key:
         return "gene_KO"
     raise ValueError(f"Cannot infer source group from {source_file}")
 
@@ -285,6 +285,10 @@ def build_dataset() -> None:
         + summary_df["label"].astype(str)
     )
     summary_df["growth_next_h"] = summary_df["mean_growth_rate"].astype(float) * 3600.0
+    if "max_generation" in summary_df.columns:
+        summary_df["max_generation"] = pd.to_numeric(
+            summary_df["max_generation"], errors="coerce"
+        )
 
     max_lookup = (
         max_generation_df[["project_name", "seed", "gene_knockout", "max_generation"]]
@@ -294,6 +298,7 @@ def build_dataset() -> None:
                 "project_name": "project",
                 "seed": "lineage_seed",
                 "gene_knockout": "ko_merge_id",
+                "max_generation": "max_generation_lookup",
             }
         )
     )
@@ -302,9 +307,17 @@ def build_dataset() -> None:
         on=["project", "lineage_seed", "ko_merge_id"],
         how="left",
     )
-    summary_df["max_generation"] = pd.to_numeric(
-        summary_df["max_generation"], errors="coerce"
-    )
+    if "max_generation_lookup" in summary_df.columns:
+        if "max_generation" in summary_df.columns:
+            summary_df["max_generation"] = summary_df["max_generation"].fillna(
+                summary_df["max_generation_lookup"]
+            )
+        else:
+            summary_df["max_generation"] = summary_df["max_generation_lookup"]
+        summary_df["max_generation"] = pd.to_numeric(
+            summary_df["max_generation"], errors="coerce"
+        )
+        summary_df = summary_df.drop(columns=["max_generation_lookup"])
     summary_df = summary_df.drop(columns=["ko_merge_id"])
     summary_df["keep_row"] = True
     summary_df.loc[
