@@ -1,3 +1,7 @@
+"""
+Description: Prepare the baseline regression data for gene/TU combined surrogate model.
+"""
+
 from __future__ import annotations
 
 from contextlib import redirect_stderr, redirect_stdout
@@ -57,9 +61,9 @@ def parse_args() -> argparse.Namespace:
         formatter_class=HelpFormatter,
         epilog=(
             "Example use:\n"
-            "  python surrogate/baseline_regression_gene_TU_combined_rebuild.py\n"
-            "  python surrogate/baseline_regression_gene_TU_combined_rebuild.py --train-dir /tmp/vEcoli-train-data\n"
-            "  python surrogate/baseline_regression_gene_TU_combined_rebuild.py --generation-window-start 4 --generation-window-end 12 --max-generation-criterion 8\n"
+            "  python surrogate/train_data_prep_gene_TU_combined.py\n"
+            "  python surrogate/train_data_prep_gene_TU_combined.py --train-dir /tmp/vEcoli-train-data\n"
+            "  python surrogate/train_data_prep_gene_TU_combined.py --max-generation-criterion 8\n"
             "\nOutput files (written to --train-dir, default: surrogate/train_data):\n"
             "  gene_TU_combined_training_dataset.parquet  (Parquet; example output dataset)\n"
             "  gene_TU_combined_training_dataset.csv      (CSV; same dataset in text form)\n"
@@ -68,7 +72,7 @@ def parse_args() -> argparse.Namespace:
             "\nDefault summary files (override by passing your own paths after --summary-file):\n"
             f"{default_summary_files_text}\n"
             "\nTo include your own files, pass multiple paths after one --summary-file flag:\n"
-            "  python surrogate/baseline_regression_gene_TU_combined_rebuild.py --summary-file /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p1_all.csv /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p2_all.csv /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p3_all.csv /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p4_all.csv /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p5_all.csv\n"
+            "  python surrogate/train_data_prep_gene_TU_combined.py --summary-file /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p1_all.csv /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p2_all.csv /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p3_all.csv /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p4_all.csv /user/home/il22158/work/vEcoli/reading/results/growth_rate/growth_rate_summary_gene_knockout_462KO_basal_operon_on_p5_all.csv\n"
         ),
     )
     parser.add_argument(
@@ -92,18 +96,6 @@ def parse_args() -> argparse.Namespace:
             "Summary CSV to include in the rebuild. Pass one or more files after a single option; "
             "if omitted, the built-in set is used."
         ),
-    )
-    parser.add_argument(
-        "--generation-window-start",
-        type=float,
-        default=4,
-        help="Lower bound for max_generation when selecting non-baseline rows; omit to keep all lower values.",
-    )
-    parser.add_argument(
-        "--generation-window-end",
-        type=float,
-        default=12,
-        help="Upper bound for max_generation when selecting non-baseline rows; omit to keep all higher values.",
     )
     parser.add_argument(
         "--max-generation-criterion",
@@ -160,14 +152,6 @@ def setup_logging() -> object:
 
 def main() -> None:
     args = parse_args()
-    if (
-        args.generation_window_start is not None
-        and args.generation_window_end is not None
-        and args.generation_window_start > args.generation_window_end
-    ):
-        raise ValueError(
-            "generation-window-start must be less than or equal to generation-window-end"
-        )
     configure_paths(args.base_dir, args.train_dir)
     summary_files = args.summary_files or SUMMARY_FILES
     log_handle = setup_logging()
@@ -176,8 +160,6 @@ def main() -> None:
             build_dataset(
                 summary_files=summary_files,
                 max_generation_criterion=args.max_generation_criterion,
-                generation_window_start=args.generation_window_start,
-                generation_window_end=args.generation_window_end,
             )
     finally:
         log_handle.close()
@@ -219,8 +201,6 @@ def parse_ko_ids(label: object) -> list[str]:
 def build_dataset(
     summary_files: list[Path],
     max_generation_criterion: float,
-    generation_window_start: float | None,
-    generation_window_end: float | None,
 ) -> None:
     global np, pd
 
@@ -338,19 +318,6 @@ def build_dataset(
         "keep_row",
     ] = False
     summary_df = summary_df.loc[summary_df["keep_row"]].copy()
-    if generation_window_start is not None or generation_window_end is not None:
-        lower_bound = (
-            generation_window_start if generation_window_start is not None else -np.inf
-        )
-        upper_bound = (
-            generation_window_end if generation_window_end is not None else np.inf
-        )
-        summary_df = summary_df.loc[
-            summary_df["run_type"].eq("baseline")
-            | summary_df["max_generation"].between(
-                lower_bound, upper_bound, inclusive="both"
-            )
-        ].copy()
     summary_df["max_generation_record_present"] = summary_df["max_generation"].notna()
     summary_df["max_generation_record_missing"] = ~summary_df[
         "max_generation_record_present"
@@ -392,14 +359,6 @@ def build_dataset(
             ).sum()
         ),
     )
-    if generation_window_start is not None or generation_window_end is not None:
-        print(
-            "Generation window:",
-            generation_window_start if generation_window_start is not None else "-inf",
-            "to",
-            generation_window_end if generation_window_end is not None else "inf",
-        )
-
     gene_mask = summary_df["source_group"].eq("gene_KO")
     tu_mask = summary_df["source_group"].eq("TU_KO")
 
