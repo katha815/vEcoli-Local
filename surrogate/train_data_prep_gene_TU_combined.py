@@ -1,13 +1,26 @@
 """
-Description: Prepare the baseline regression data for gene/TU combined surrogate model.
+Description: Prepare the gene/TU combined surrogate training dataset.
+
+Workflow:
+1. Load the requested growth-rate summary CSV files.
+2. Classify each row as gene-KO or TU-KO based on its source file.
+3. Extract the project name, seed from the summary file columns and convert the growth rate unit.
+4. Parse KO IDs from the label and attach row metadata.
+5. Load the full gene and TU reference tables.
+6. Create one feature column for every reference gene and every reference TU.
+7. Merge max-generation lookup values and mark failed runs.
+8. Drop baseline rows except for the special gene_knockout_p_list project.
+9. Set gene/TU availability features to 1 for the relevant block and 0 for knocked-out IDs.
+10. Leave the irrelevant gene/TU block as NaN for each row.
+11. Write the combined dataset, feature manifest, and filtered summary outputs.
 """
 
 from __future__ import annotations
 
 from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
-import re
 import argparse
+import re
 
 DEFAULT_BASE_DIR = Path("/user/home/il22158/work/vEcoli")
 DEFAULT_TRAIN_DIR = DEFAULT_BASE_DIR / "surrogate" / "train_data"
@@ -170,21 +183,24 @@ def load_summary(path: Path) -> pd.DataFrame:
     df["source_file"] = path.name
     df["label_raw"] = df["label"]
     df["label"] = df["label"].astype("string").str.replace(r"^KO:\s*", "", regex=True)
+
+    if "lineage_seed" not in df.columns:
+        raise ValueError(f"Missing lineage_seed column in summary file: {path}")
+
+    df["lineage_seed"] = pd.to_numeric(df["lineage_seed"], errors="coerce").astype(
+        "Int64"
+    )
     return df
 
 
 def infer_source_group(source_file: str) -> str:
+    # Classify the input file as either a gene-KO or TU-KO cohort.
     key = source_file.lower()
     if "tu_id_rest_list_rerun12" in key:
         return "TU_KO"
     if "gene_knockout" in key or "102trails" in key or "leftover" in key:
         return "gene_KO"
     raise ValueError(f"Cannot infer source group from {source_file}")
-
-
-def extract_seed(source_file: str):
-    match = re.search(r"seed(\d+)", source_file)
-    return int(match.group(1)) if match else pd.NA
 
 
 def parse_ko_ids(label: object) -> list[str]:
@@ -207,9 +223,12 @@ def build_dataset(
     import numpy as np
     import pandas as pd
 
+    # Step 1: stack all requested summary files into one table.
     summary_df = pd.concat(
         [load_summary(path) for path in summary_files], ignore_index=True
     )
+
+    # Step 2: load and normalize the max-generation lookup table.
     max_generation_df = pd.read_csv(MAX_GENERATION_FILE)
     max_generation_df["gene_knockout"] = max_generation_df["gene_knockout"].astype(
         "string"
@@ -224,6 +243,7 @@ def build_dataset(
         max_generation_df["max_generation"], errors="coerce"
     )
 
+    # Step 3: load the full reference lists and create one feature column per gene/TU.
     gene_ref = pd.read_csv(GENE_REF, sep="\t", comment="#")
     tu_ref = pd.read_csv(TU_REF, sep="\t", comment="#")
 
@@ -232,10 +252,9 @@ def build_dataset(
     gene_feature_cols = [f"gene_available__{gene_id}" for gene_id in gene_ids]
     tu_feature_cols = [f"tu_available__{tu_id}" for tu_id in tu_ids]
 
+    # Step 4: derive metadata from summary file, convert the growth rate to 1/h for each row.
     summary_df["source_group"] = summary_df["source_file"].map(infer_source_group)
-    summary_df["lineage_seed"] = (
-        summary_df["source_file"].map(extract_seed).astype("Int64")
-    )
+
     summary_df["run_type"] = np.where(
         summary_df["label"].astype(str).eq("baseline"), "baseline", "KO"
     )
@@ -282,6 +301,7 @@ def build_dataset(
             summary_df["max_generation"], errors="coerce"
         )
 
+    # Step 5: merge the max-generation lookup and resolve the final value.
     max_lookup = (
         max_generation_df[["project_name", "seed", "gene_knockout", "max_generation"]]
         .drop_duplicates(subset=["project_name", "seed", "gene_knockout"])
@@ -311,6 +331,8 @@ def build_dataset(
         )
         summary_df = summary_df.drop(columns=["max_generation_lookup"])
     summary_df = summary_df.drop(columns=["ko_merge_id"])
+
+    # Step 6: drop baseline rows except for the special gene_knockout_p_list project.
     summary_df["keep_row"] = True
     summary_df.loc[
         summary_df["run_type"].eq("baseline")
@@ -322,6 +344,7 @@ def build_dataset(
     summary_df["max_generation_record_missing"] = ~summary_df[
         "max_generation_record_present"
     ]
+    # Step 7: mark failed runs and zero their growth values when needed.
     summary_df["failed_generation"] = summary_df["max_generation"].isna() | summary_df[
         "max_generation"
     ].lt(max_generation_criterion)
@@ -359,6 +382,8 @@ def build_dataset(
             ).sum()
         ),
     )
+
+    # Step 8: build the gene/TU feature matrices and set KO-specific entries to 0.
     gene_mask = summary_df["source_group"].eq("gene_KO")
     tu_mask = summary_df["source_group"].eq("TU_KO")
 
@@ -382,6 +407,7 @@ def build_dataset(
             if col in tu_features.columns:
                 tu_features.at[idx, col] = 0
 
+    # Step 9: combine metadata and features, then write all output files.
     combined_df = pd.concat(
         [
             summary_df.reset_index(drop=True),

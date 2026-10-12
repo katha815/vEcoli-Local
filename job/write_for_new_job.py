@@ -333,6 +333,8 @@ def main() -> None:
     (run_dir / "launcher_command.txt").write_text(
         launcher_command + "\n", encoding="utf-8"
     )
+    scripts_dir = run_dir / "slurm"
+    scripts_dir.mkdir(parents=True, exist_ok=True)
 
     manifest_rows = []
     for gene in genes:
