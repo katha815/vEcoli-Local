@@ -348,7 +348,7 @@ def main():
             df = extract_growth_rate_data(
                 proj["folder"],
                 proj["variant_key"],
-                generation=generations,
+                generation=generations,  # type: ignore
                 max_variants=max_variants,
                 save_timeseries=args.save_timeseries,
                 lineage_seed=lineage_seed,

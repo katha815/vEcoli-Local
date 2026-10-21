@@ -23,7 +23,7 @@ import argparse
 import re
 
 DEFAULT_BASE_DIR = Path("/user/home/il22158/work/vEcoli")
-DEFAULT_TRAIN_DIR = DEFAULT_BASE_DIR / "surrogate" / "train_data"
+DEFAULT_TRAIN_DIR = DEFAULT_BASE_DIR / "surrogate" / "train" / "basal"
 
 BASE = DEFAULT_BASE_DIR
 TRAIN_DIR = DEFAULT_TRAIN_DIR

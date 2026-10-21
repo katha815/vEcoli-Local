@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#SBATCH --job-name=gene_expression_extract_462KO_basal_operon_on
-#SBATCH --partition=short
-#SBATCH --time=3-00:00:00
+#SBATCH --job-name=exchange_flux_extract_462KO_basal_operon_on
+#SBATCH --partition=compute
+#SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=/user/home/il22158/work/slurm_logs/gene_expression_extract_462KO_basal_operon_on.%j.out
-#SBATCH --mem=20G
+#SBATCH --output=/user/home/il22158/work/slurm_logs/exchange_flux_extract_462KO_basal_operon_on.%j.out
+#SBATCH --mem=50G
 #SBATCH --cpus-per-task=4
 
 # == Work directory setup ==
@@ -66,16 +66,17 @@ GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.tx
 mapfile -t GENE_IDS < "$GENE_LIST"
 MEDIA_LIST=(acetate no_ox succinate with_aa)
 
-# echo "Extracting baseline media..."
-# python reading/growth_rate_extract.py --all \
-#   --projects \
-#     gene_knockout_462KO_basal_operon_on_p1 \
-#     gene_knockout_462KO_basal_operon_on_p2 \
-#     gene_knockout_462KO_basal_operon_on_p3 \
-#     gene_knockout_462KO_basal_operon_on_p4 \
-#     gene_knockout_462KO_basal_operon_on_p5 \
-#   --lineage-seeds 100 101 \
-#   --suffix gene_knockout_462KO_basal
+echo "Extracting baseline media..."
+python reading/exchange_flux_extract.py --all \
+  --projects \
+    gene_knockout_462KO_basal_operon_on_p1 \
+    gene_knockout_462KO_basal_operon_on_p2 \
+    gene_knockout_462KO_basal_operon_on_p3 \
+    gene_knockout_462KO_basal_operon_on_p4 \
+    gene_knockout_462KO_basal_operon_on_p5 \
+  --lineage-seeds 100 101 \
+  --suffix gene_knockout_462KO_basal \
+  --save-timeseries
 
 for media in "${MEDIA_LIST[@]}"; do
   projects=()
@@ -90,10 +91,11 @@ for media in "${MEDIA_LIST[@]}"; do
     echo "WARNING: ${media} has ${#projects[@]} KO folders, not 462"
   fi
 
-  python reading/growth_rate_extract.py --all \
+  python reading/exchange_flux_extract.py --all \
     --projects "${projects[@]}" \
     --lineage-seeds 100 101 \
-    --suffix "gene_knockout_462KO_${media}"
+    --suffix "gene_knockout_462KO_${media}" \
+    --save-timeseries
 done
 
 # echo "Preprocessing growth rate to fold change data (all parquet files)..."

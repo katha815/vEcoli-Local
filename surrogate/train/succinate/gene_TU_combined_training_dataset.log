@@ -1,0 +1,17 @@
+Summary shape: (682, 31)
+Source-group counts:
+ source_group
+gene_KO    682
+Baseline rows kept: 0
+Rows with max_generation record present: 682
+Rows with max_generation record missing: 0
+Rows with max_generation < 8 or missing: 267
+Rows with max_generation < 8 or missing among present records: 267
+Combined dataset shape: (682, 8544)
+Gene_KO TU block blank: True
+TU_KO gene block blank: True
+Zero growth rows among failed simulations: 267
+Rows with max_generation record missing: 0
+Saved parquet: /user/home/il22158/work/vEcoli/surrogate/train/succinate/gene_TU_combined_training_dataset.parquet
+Saved csv: /user/home/il22158/work/vEcoli/surrogate/train/succinate/gene_TU_combined_training_dataset.csv
+Saved feature list: /user/home/il22158/work/vEcoli/surrogate/train/succinate/gene_TU_combined_feature_list.csv
