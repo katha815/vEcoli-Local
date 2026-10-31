@@ -6,8 +6,9 @@
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
 #SBATCH --output=/user/home/il22158/work/slurm_logs/exchange_flux_extract_462KO_basal_operon_on.%j.out
-#SBATCH --mem=50G
+#SBATCH --mem=20G
 #SBATCH --cpus-per-task=4
+#SBATCH --array=0-4
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
@@ -60,43 +61,33 @@ nextflow -version
 #     --suffix gene_knockout_462KO_basal_operon_on_p5 --lineage-seeds 100 101
 
 #-----Customised Script-----#
-# Check that the KO list really contains 462 entries before launching media-specific extracts.
-# This prints the count for each media and skips any folder that does not exist.
-GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt
-mapfile -t GENE_IDS < "$GENE_LIST"
-MEDIA_LIST=(acetate no_ox succinate with_aa)
+# Task 0 = baseline p1-p5; tasks 1-4 = one media each
+GENE_LIST="$WORK_DIR/reading/imported/Single_KO_RNA_names.txt"
+TARGETS=(baseline acetate no_ox succinate with_aa)
+target="${TARGETS[$SLURM_ARRAY_TASK_ID]}"
+echo "Task ${SLURM_ARRAY_TASK_ID}: ${target}"
 
-echo "Extracting baseline media..."
-python reading/exchange_flux_extract.py --all \
-  --projects \
-    gene_knockout_462KO_basal_operon_on_p1 \
-    gene_knockout_462KO_basal_operon_on_p2 \
-    gene_knockout_462KO_basal_operon_on_p3 \
-    gene_knockout_462KO_basal_operon_on_p4 \
-    gene_knockout_462KO_basal_operon_on_p5 \
-  --lineage-seeds 100 101 \
-  --suffix gene_knockout_462KO_basal \
-  --save-timeseries
-
-for media in "${MEDIA_LIST[@]}"; do
+if [[ "$target" == "baseline" ]]; then
+  projects=()
+  for p in 1 2 3 4 5; do
+    projects+=("gene_knockout_462KO_basal_operon_on_p${p}")
+  done
+  suffix="gene_knockout_462KO_basal"
+else
+  mapfile -t GENE_IDS < "$GENE_LIST"
   projects=()
   for gene in "${GENE_IDS[@]}"; do
-    projects+=("gene_knockout_${gene}_${media}")
+    projects+=("gene_knockout_${gene}_${target}")
   done
+  echo "${target}: ${#projects[@]} KO projects listed (expected 462)"
+  suffix="gene_knockout_462KO_${target}"
+fi
 
-  echo "Checking ${media}: ${#projects[@]} KO folders expected 462"
-  if [[ "${#projects[@]}" -eq 462 ]]; then
-    echo "the KO number is correct"
-  else
-    echo "WARNING: ${media} has ${#projects[@]} KO folders, not 462"
-  fi
-
-  python reading/exchange_flux_extract.py --all \
-    --projects "${projects[@]}" \
-    --lineage-seeds 100 101 \
-    --suffix "gene_knockout_462KO_${media}" \
-    --save-timeseries
-done
+python reading/exchange_flux_extract.py --all \
+  --projects "${projects[@]}" \
+  --lineage-seeds 100 101 \
+  --suffix "$suffix" \
+  --save-timeseries
 
 # echo "Preprocessing growth rate to fold change data (all parquet files)..."
 # GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt

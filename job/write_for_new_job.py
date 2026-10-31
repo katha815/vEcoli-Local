@@ -21,7 +21,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple
 
 
 ROOT_DIR = Path("/user/home/il22158/work/vEcoli")
@@ -37,7 +37,11 @@ TOTAL_MEDIA = ["with_aa", "acetate", "no_ox", "succinate", "basal"]
 
 class JobSpec:
     def __init__(
-        self, gene: str, media: str, generation_start: int, generation_end: int
+        self,
+        gene: Optional[str],
+        media: str,
+        generation_start: int,
+        generation_end: int,
     ):
         self.gene = gene
         self.media = media
@@ -46,6 +50,8 @@ class JobSpec:
 
     @property
     def project(self) -> str:
+        if self.gene is None:
+            return f"wildtype_{self.media}"
         return f"gene_knockout_{self.gene}_{self.media}"
 
 
@@ -53,18 +59,25 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=(
-            "Create one knockout simulation job per gene/media pair and submit it to Slurm."
+            "Create one simulation job per gene/media pair (knockout) or per medium "
+            "(wildtype) and submit it to Slurm."
         ),
         epilog=(
             "The launcher reads genes from the gene list file and uses the media\n"
             "window CSV to map each selected medium to a generation range for\n"
-            "growth-rate extraction.\n\n"
+            "growth-rate extraction. Use --simulation-type wildtype to create\n"
+            "one wildtype job per selected medium, without gene knockouts. Pass\n"
+            "multiple media values after --media to include several conditions.\n\n"
             "Test run that only produces configuration and submission code:\n"
             "  python job/write_for_new_job.py --dry-run\n\n"
             "Test run with job submission:\n"
             "  printf 'EG10001\\n' > /tmp/one_gene_ko.txt && python job/write_for_new_job.py --genes-file /tmp/one_gene_ko.txt --media with_aa\n\n"
+            "Wildtype dry run:\n"
+            "  python job/write_for_new_job.py --simulation-type wildtype --media no_ox acetate succinate with_aa --dry-run\n\n"
             "Default full run:\n"
             "  python job/write_for_new_job.py\n\n"
+            "Run growth-rate extraction after each simulation:\n"
+            "  python job/write_for_new_job.py --extract-growth-rate\n\n"
             "Where to find results:\n"
             "  Slurm stdout/stderr: /user/home/il22158/work/slurm_logs/<job>.%j.out\n"
             "  Launcher artifacts: /user/home/il22158/work/vEcoli/job/generated_runs/launcher/<run-id>/\n"
@@ -77,8 +90,9 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_TEMPLATE_CONFIG,
         help=(
             "Base JSON config used as the template for each job. The launcher"
-            " copies this file and updates experiment_id, condition,"
-            " generations, and genes_to_knockout for each job."
+            " copies this file and sets experiment_id, condition (medium),"
+            " and generations. In knockout mode it also sets one knockout"
+            " gene in variants."
         ),
     )
     parser.add_argument(
@@ -87,8 +101,19 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_GENE_LIST,
         help=(
             "Text file containing one gene ID per line. The default is the"
-            " full Single_KO_RNA_names.txt list; use a custom file to test one"
-            " gene or a smaller subset."
+            " full Single_KO_RNA_names.txt list for knockout simulations; use"
+            " a custom file to test one gene or a smaller subset. Not used"
+            " for wildtype simulations."
+        ),
+    )
+    parser.add_argument(
+        "--simulation-type",
+        choices=["knockout", "wildtype"],
+        default="knockout",
+        help=(
+            "Simulation type. 'knockout' (default) creates one gene-knockout"
+            " job per gene and medium; 'wildtype' creates one unmodified job"
+            " per medium."
         ),
     )
     parser.add_argument(
@@ -126,8 +151,8 @@ def parse_args() -> argparse.Namespace:
         nargs="+",
         default=DEFAULT_LINEAGE_SEEDS,
         help=(
-            "Lineage seeds to pass to growth_rate_extract.py. The default"
-            " matches the current test setup (100 101)."
+            "Lineage seeds for optional growth_rate_extract.py. Used only"
+            " with --extract-growth-rate. Default: 100 101."
         ),
     )
     parser.add_argument(
@@ -136,9 +161,13 @@ def parse_args() -> argparse.Namespace:
         choices=TOTAL_MEDIA,
         default=DEFAULT_MEDIA,
         help=(
-            "Subset of media conditions to process. Each selected medium must"
-            " appear in the media-windows CSV. The default runs with_aa,"
-            " acetate, no_ox, and succinate. Choices: " + ", ".join(TOTAL_MEDIA)
+            "One or more media conditions to process (for example:"
+            " --media no_ox acetate succinate with_aa). Each selected medium"
+            " must appear in the media-windows CSV. Knockout mode creates a"
+            " job per gene and medium; wildtype mode creates one job per"
+            " medium. Each job sets its medium using the top-level 'condition'"
+            " config option. The default is with_aa, acetate, no_ox, and succinate."
+            " Choices: " + ", ".join(TOTAL_MEDIA)
         ),
     )
     parser.add_argument(
@@ -180,6 +209,14 @@ def parse_args() -> argparse.Namespace:
         "--dry-run",
         action="store_true",
         help="Write configs and Slurm scripts without submitting them.",
+    )
+    parser.add_argument(
+        "--extract-growth-rate",
+        action="store_true",
+        help=(
+            "Run growth_rate_extract.py after the simulation in each Slurm job."
+            " By default, extraction is skipped so it can be run later."
+        ),
     )
     return parser.parse_args()
 
@@ -247,10 +284,15 @@ def build_config(
     config["experiment_id"] = job.project
     config["condition"] = job.media
     config["generations"] = generations
-    config.setdefault("variants", {})
-    config["variants"].setdefault("gene_knockout", {})
-    config["variants"]["gene_knockout"].setdefault("genes_to_knockout", {})
-    config["variants"]["gene_knockout"]["genes_to_knockout"]["value"] = [[job.gene]]
+    if job.gene is None:
+        config["variants"] = {}
+        config["skip_baseline"] = False
+    else:
+        config["variants"] = {
+            "gene_knockout": {
+                "genes_to_knockout": {"value": [[job.gene]]},
+            }
+        }
     return config
 
 
@@ -264,6 +306,17 @@ def build_slurm_script(
         str(generation)
         for generation in range(job.generation_start, job.generation_end + 1)
     )
+    growth_rate_extraction = ""
+    if args.extract_growth_rate:
+        growth_rate_extraction = f"""
+python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \\
+    --all \\
+    --projects {job.project} \\
+    --save-timeseries \\
+    --suffix {job.project} \\
+    --lineage-seeds {" ".join(str(seed) for seed in args.lineage_seeds)} \\
+    --generations {generation_args}
+"""
     return f"""#!/bin/bash
 #SBATCH --job-name={job.project}
 #SBATCH --partition={args.partition}
@@ -286,15 +339,8 @@ module list
 
 nextflow -version
 
-    python runscripts/workflow.py --config {config_path}
-
-python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
-    --all \
-    --projects {job.project} \
-    --save-timeseries \
-    --suffix {job.project} \
-    --lineage-seeds {" ".join(str(seed) for seed in args.lineage_seeds)} \
-    --generations {generation_args}
+python runscripts/workflow.py --config {config_path}
+{growth_rate_extraction}
 """
 
 
@@ -309,7 +355,7 @@ def main() -> None:
 
     if not args.template_config.exists():
         raise FileNotFoundError(f"Template config not found: {args.template_config}")
-    if not args.genes_file.exists():
+    if args.simulation_type == "knockout" and not args.genes_file.exists():
         raise FileNotFoundError(f"Gene list not found: {args.genes_file}")
     if not args.media_windows.exists():
         raise FileNotFoundError(f"Media window CSV not found: {args.media_windows}")
@@ -320,7 +366,9 @@ def main() -> None:
     with args.template_config.open("r", encoding="utf-8") as handle:
         template_config = json.load(handle)
 
-    genes = load_genes(args.genes_file)
+    genes = (
+        load_genes(args.genes_file) if args.simulation_type == "knockout" else [None]
+    )
     selected_media = set(args.media)
     media_windows = load_media_windows(args.media_windows, selected_media)
 
@@ -336,7 +384,8 @@ def main() -> None:
     scripts_dir = run_dir / "slurm"
     scripts_dir.mkdir(parents=True, exist_ok=True)
 
-    manifest_rows = []
+    submission_records = []
+    script_paths = []
     for gene in genes:
         for media in args.media:
             job = make_job_spec(gene, media, media_windows)
@@ -348,38 +397,36 @@ def main() -> None:
             )
 
             script_path = scripts_dir / f"{job.project}.sh"
-            script_path.write_text(
-                build_slurm_script(job, config_path, args, args.slurm_log_dir),
-                encoding="utf-8",
+            slurm_script = build_slurm_script(
+                job, config_path, args, args.slurm_log_dir
             )
+            script_path.write_text(slurm_script, encoding="utf-8")
 
-            manifest_rows.append(
-                {
-                    "gene": gene,
-                    "media": media,
-                    "project": job.project,
-                    "generation_start": str(job.generation_start),
-                    "generation_end": str(job.generation_end),
-                    "launcher_command": launcher_command,
-                    "config_path": str(config_path),
-                    "script_path": str(script_path),
-                }
+            submission_records.append(
+                (
+                    job.project,
+                    f"sbatch {shlex.quote(str(script_path))}",
+                    slurm_script,
+                )
             )
+            script_paths.append(script_path)
 
-            if not args.dry_run:
-                submit_job(script_path)
+    manifest_path = run_dir / "submission_manifest.txt"
+    with manifest_path.open("w", encoding="utf-8") as handle:
+        for project, submit_command, slurm_script in submission_records:
+            handle.write(f"Job: {project}\n")
+            handle.write(f"Submission command: {submit_command}\n")
+            handle.write("Submitted Slurm script:\n")
+            handle.write(slurm_script)
+            handle.write("\n" + "=" * 80 + "\n\n")
 
-    manifest_path = run_dir / "manifest.csv"
-    with manifest_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(manifest_rows[0].keys()))
-        writer.writeheader()
-        writer.writerows(manifest_rows)
-
-    print(f"Wrote {len(manifest_rows)} job definitions to {manifest_path}")
+    print(f"Wrote {len(script_paths)} job definitions to {manifest_path}")
     if args.dry_run:
         print(f"Dry run only; no jobs submitted. Scripts are under {scripts_dir}")
     else:
-        print(f"Submitted {len(manifest_rows)} Slurm jobs")
+        for script_path in script_paths:
+            submit_job(script_path)
+        print(f"Submitted {len(script_paths)} Slurm jobs")
 
 
 if __name__ == "__main__":

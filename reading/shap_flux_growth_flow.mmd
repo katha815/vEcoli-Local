@@ -1,0 +1,34 @@
+flowchart TD
+    A1["Exchange flux summaries<br/>exchange_flux_summary_gene_knockout_462KO_{medium}_all.csv<br/>4 media, 78 metabolites"]
+    A2["Growth rate summaries<br/>growth_rate_summary_gene_knockout_462KO_{medium}_all.csv"]
+    A3["zero_detect_AND_threshold_0.99.csv<br/>78 rows, 20 zero_detected"]
+
+    S1["Step 1: Match samples<br/>keys: project, variant, lineage_seed<br/>924 / 715 / 682 / 697 matched, 0 label mismatches"]
+    S2["Step 2: Drop constant fluxes<br/>zero_detected (20) + constant in medium<br/>robust z-score (median/MAD) per metabolite and medium<br/>pivot to wide, 57 / 58 / 57 / 57 features"]
+    S3["Step 3: Spearman baseline<br/>step3_spearman_baseline.csv"]
+    S31["Step 3.1: Trim samples<br/>remove single-timepoint runs (n_timepoints = 1, duration 0 s)<br/>-112 / -72 / -62 / -72 samples<br/>812 / 643 / 620 / 625 samples; 406 / 323 / 311 / 313 KOs<br/>features 37 / 36 / 39 / 32"]
+    S31b["step31_trimmed_{medium}.csv<br/>step31_spearman_trimmed.csv"]
+
+    S4["Step 4: XGBoost on growth_norm<br/>5-fold CV grouped by KO label<br/>per medium + pooled (medium one-hot)<br/>model_cv_metrics.csv"]
+    S5["Step 5: Out-of-fold SHAP<br/>TreeExplainer per fold<br/>shap_importance_*.csv, bar / summary / dependence plots"]
+    S6["Step 6: Compare media<br/>importance shares, rank correlation, shared and specific top-10<br/>shap_compare_media_heatmap.png"]
+    S7["Step 7: Robustness<br/>seeds with shuffled KO folds, log growth, median_flux<br/>shap_robustness.csv"]
+    S8["Step 7b: Collinearity clusters<br/>hierarchical clustering on 1 - abs(Spearman), cut 0.3<br/>shap_clusters_*.csv"]
+    C["Conclusions and next steps"]
+
+    A1 --> S1
+    A2 --> S1
+    S1 --> S2
+    A3 --> S2
+    S2 --> S3
+    S2 --> S31
+    S31 --> S31b
+    S31b --> S4
+    S31b --> S3
+    S4 --> S5
+    S5 --> S6
+    S5 --> S7
+    S5 --> S8
+    S6 --> C
+    S7 --> C
+    S8 --> C
