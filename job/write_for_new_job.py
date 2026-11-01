@@ -31,8 +31,8 @@ DEFAULT_MEDIA_WINDOWS = ROOT_DIR / "job/tdi_summary_40trial_5media_composite_tdi
 DEFAULT_OUTPUT_DIR = ROOT_DIR / "job/generated_runs"
 DEFAULT_SLURM_LOG_DIR = ROOT_DIR.parent / "slurm_logs"
 DEFAULT_LINEAGE_SEEDS = [100, 101]
-DEFAULT_MEDIA = ["with_aa", "acetate", "no_ox", "succinate"]
-TOTAL_MEDIA = ["with_aa", "acetate", "no_ox", "succinate", "basal"]
+DEFAULT_MEDIA = ["with_aa", "acetate", "no_oxygen", "succinate"]
+TOTAL_MEDIA = ["with_aa", "acetate", "no_oxygen", "succinate", "basal"]
 
 
 class JobSpec:
@@ -42,17 +42,22 @@ class JobSpec:
         media: str,
         generation_start: int,
         generation_end: int,
+        project_name: Optional[str] = None,
     ):
         self.gene = gene
         self.media = media
         self.generation_start = generation_start
         self.generation_end = generation_end
+        self.project_name = project_name
 
     @property
     def project(self) -> str:
-        if self.gene is None:
+        if self.project_name:
+            return self.project_name
+        elif self.gene is None:
             return f"wildtype_{self.media}"
-        return f"gene_knockout_{self.gene}_{self.media}"
+        else:
+            return f"gene_knockout_{self.gene}_{self.media}"
 
 
 def parse_args() -> argparse.Namespace:
@@ -73,7 +78,7 @@ def parse_args() -> argparse.Namespace:
             "Test run with job submission:\n"
             "  printf 'EG10001\\n' > /tmp/one_gene_ko.txt && python job/write_for_new_job.py --genes-file /tmp/one_gene_ko.txt --media with_aa\n\n"
             "Wildtype dry run:\n"
-            "  python job/write_for_new_job.py --simulation-type wildtype --media no_ox acetate succinate with_aa --dry-run\n\n"
+            "  python job/write_for_new_job.py --simulation-type wildtype --media no_oxygen acetate succinate with_aa --dry-run\n\n"
             "Default full run:\n"
             "  python job/write_for_new_job.py\n\n"
             "Run growth-rate extraction after each simulation:\n"
@@ -93,6 +98,14 @@ def parse_args() -> argparse.Namespace:
             " copies this file and sets experiment_id, condition (medium),"
             " and generations. In knockout mode it also sets one knockout"
             " gene in variants."
+        ),
+    )
+    parser.add_argument(
+        "--project-name",
+        default=None,
+        help=(
+            "Manually set the project/experiment name. Default: auto name."
+            " Requires exactly one job (one gene and one medium)."
         ),
     )
     parser.add_argument(
@@ -151,10 +164,13 @@ def parse_args() -> argparse.Namespace:
         nargs="+",
         default=DEFAULT_LINEAGE_SEEDS,
         help=(
-            "Lineage seeds for optional growth_rate_extract.py. Used only"
-            " with --extract-growth-rate. Default: 100 101."
+            "Seed range as 'FIRST LAST' (inclusive), e.g. '1 20' for seeds 1-20."
+            " A single value means one seed. FIRST is written as 'lineage_seed'"
+            " and the count as 'n_init_sims'; the same seeds are used by"
+            " growth_rate_extract.py. Default: 100 101."
         ),
     )
+
     parser.add_argument(
         "--media",
         nargs="+",
@@ -162,11 +178,11 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_MEDIA,
         help=(
             "One or more media conditions to process (for example:"
-            " --media no_ox acetate succinate with_aa). Each selected medium"
+            " --media no_oxygen acetate succinate with_aa). Each selected medium"
             " must appear in the media-windows CSV. Knockout mode creates a"
             " job per gene and medium; wildtype mode creates one job per"
             " medium. Each job sets its medium using the top-level 'condition'"
-            " config option. The default is with_aa, acetate, no_ox, and succinate."
+            " The default is basal, with_aa, acetate, no_oxygen, and succinate."
             " Choices: " + ", ".join(TOTAL_MEDIA)
         ),
     )
@@ -266,7 +282,10 @@ def load_media_windows(
 
 
 def make_job_spec(
-    gene: str, media: str, media_windows: Dict[str, Tuple[int, int]]
+    gene: str,
+    media: str,
+    media_windows: Dict[str, Tuple[int, int]],
+    project_name: Optional[str] = None,
 ) -> JobSpec:
     generation_start, generation_end = media_windows[media]
     return JobSpec(
@@ -274,16 +293,22 @@ def make_job_spec(
         media=media,
         generation_start=generation_start,
         generation_end=generation_end,
+        project_name=project_name,
     )
 
 
 def build_config(
-    template_config: Dict[str, object], job: JobSpec, generations: int
+    template_config: Dict[str, object],
+    job: JobSpec,
+    generations: int,
+    lineage_seeds: List[int],
 ) -> Dict[str, object]:
     config = json.loads(json.dumps(template_config))
     config["experiment_id"] = job.project
     config["condition"] = job.media
     config["generations"] = generations
+    config["lineage_seed"] = lineage_seeds[0]
+    config["n_init_sims"] = len(range(lineage_seeds[0], lineage_seeds[-1] + 1))
     if job.gene is None:
         config["variants"] = {}
         config["skip_baseline"] = False
@@ -353,6 +378,17 @@ def main() -> None:
     launcher_command = " ".join(shlex.quote(arg) for arg in sys.argv)
     launch_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
+    if len(args.lineage_seeds) == 1:
+        first = last = args.lineage_seeds[0]
+    elif (
+        len(args.lineage_seeds) == 2 and args.lineage_seeds[0] <= args.lineage_seeds[1]
+    ):
+        first, last = args.lineage_seeds
+    else:
+        raise ValueError(
+            "--lineage-seeds takes 'FIRST LAST' (FIRST <= LAST) or one value."
+        )
+
     if not args.template_config.exists():
         raise FileNotFoundError(f"Template config not found: {args.template_config}")
     if args.simulation_type == "knockout" and not args.genes_file.exists():
@@ -388,8 +424,10 @@ def main() -> None:
     script_paths = []
     for gene in genes:
         for media in args.media:
-            job = make_job_spec(gene, media, media_windows)
-            config = build_config(template_config, job, args.generations)
+            job = make_job_spec(gene, media, media_windows, args.project_name)
+            config = build_config(
+                template_config, job, args.generations, args.lineage_seeds
+            )
 
             config_path = configs_dir / f"{job.project}.json"
             config_path.write_text(
