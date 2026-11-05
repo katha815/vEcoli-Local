@@ -1,14 +1,13 @@
 #!/bin/bash
 
-#SBATCH --job-name=exchange_flux_extract_462KO_basal_operon_on
+#SBATCH --job-name=growth_rate_extract_4_media_462KO
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=/user/home/il22158/work/slurm_logs/exchange_flux_extract_462KO_basal_operon_on.%j.out
+#SBATCH --output=/user/home/il22158/work/slurm_logs/growth_rate_extract_4_media_462KO.%j.out
 #SBATCH --mem=20G
 #SBATCH --cpus-per-task=4
-#SBATCH --array=0-4
 
 # == Work directory setup ==
 WORK_DIR="/user/home/il22158/work/vEcoli"
@@ -34,7 +33,6 @@ nextflow -version
 # echo "Snapshot for job ${SLURM_JOB_ID}"
 
 # === JOB EXECUTION ===
-
 # echo "Starting downsampling of history parquet files again to make it end in 1/20 size..."
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_non_metabolic_seed100/history --n 20 
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 
@@ -53,9 +51,7 @@ nextflow -version
 # echo "Run gene screen for the 3rd KO test..."
 # python reading/gene_screen.py --project gene_knockout_3_round_test --lineage-seed 100 101 --variants $(seq 0 50) --gene-list surrogate/third_round_tested_gene_list.txt
 
-# echo "Extracting gene expression for 462 KO simulation in basal media with operon on..."
-# python reading/gene_expression_extract.py --all --lineage-seeds 100 101 --save-timeseries --suffix first_im
-
+# echo "Extracting gene expression for wildtype simulations..."
 # python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \
 #     --all --projects gene_knockout_462KO_basal_operon_on_p5 --save-timeseries\
 #     --suffix gene_knockout_462KO_basal_operon_on_p5 --lineage-seeds 100 101
@@ -63,7 +59,7 @@ nextflow -version
 #-----Customised Script-----#
 # Task 0 = baseline p1-p5; tasks 1-4 = one media each
 GENE_LIST="$WORK_DIR/reading/imported/Single_KO_RNA_names.txt"
-TARGETS=(baseline acetate no_ox succinate with_aa)
+TARGETS=(baseline acetate succinate with_aa)
 target="${TARGETS[$SLURM_ARRAY_TASK_ID]}"
 echo "Task ${SLURM_ARRAY_TASK_ID}: ${target}"
 
