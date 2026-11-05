@@ -43,8 +43,10 @@ class JobSpec:
         generation_start: int,
         generation_end: int,
         project_name: Optional[str] = None,
+        project_suffix: str = "",
     ):
         self.gene = gene
+        self.project_suffix = project_suffix
         self.media = media
         self.generation_start = generation_start
         self.generation_end = generation_end
@@ -55,9 +57,9 @@ class JobSpec:
         if self.project_name:
             return self.project_name
         elif self.gene is None:
-            return f"wildtype_{self.media}"
+            return f"wildtype_{self.media}{self.project_suffix}"
         else:
-            return f"gene_knockout_{self.gene}_{self.media}"
+            return f"gene_knockout_{self.gene}_{self.media}{self.project_suffix}"
 
 
 def parse_args() -> argparse.Namespace:
@@ -107,6 +109,11 @@ def parse_args() -> argparse.Namespace:
             "Manually set the project/experiment name. Default: auto name."
             " Requires exactly one job (one gene and one medium)."
         ),
+    )
+    parser.add_argument(
+        "--project-suffix",
+        default="",
+        help="Suffix appended to auto-generated project names (e.g. _s1).",
     )
     parser.add_argument(
         "--genes-file",
@@ -286,6 +293,7 @@ def make_job_spec(
     media: str,
     media_windows: Dict[str, Tuple[int, int]],
     project_name: Optional[str] = None,
+    project_suffix: str = "",
 ) -> JobSpec:
     generation_start, generation_end = media_windows[media]
     return JobSpec(
@@ -294,6 +302,7 @@ def make_job_spec(
         generation_start=generation_start,
         generation_end=generation_end,
         project_name=project_name,
+        project_suffix=project_suffix,
     )
 
 
@@ -424,7 +433,9 @@ def main() -> None:
     script_paths = []
     for gene in genes:
         for media in args.media:
-            job = make_job_spec(gene, media, media_windows, args.project_name)
+            job = make_job_spec(
+                gene, media, media_windows, args.project_name, args.project_suffix
+            )
             config = build_config(
                 template_config, job, args.generations, args.lineage_seeds
             )

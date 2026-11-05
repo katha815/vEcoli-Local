@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --job-name=growth_rate_extract_4_media_462KO
+#SBATCH --job-name=growth_rate_extract_462KO_4media
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=/user/home/il22158/work/slurm_logs/growth_rate_extract_4_media_462KO.%j.out
+#SBATCH --output=/user/home/il22158/work/slurm_logs/growth_rate_extract_462KO_4media.%j.out
 #SBATCH --mem=20G
 #SBATCH --cpus-per-task=4
 
@@ -79,11 +79,28 @@ else
   suffix="gene_knockout_462KO_${target}"
 fi
 
-python reading/exchange_flux_extract.py --all \
+python reading/growth_rate_extract.py --all \
   --projects "${projects[@]}" \
   --lineage-seeds 100 101 \
   --suffix "$suffix" \
   --save-timeseries
+
+# echo "Extracting wildtype growth rate for 4 media (2 seeds each)..."
+
+# # Sanity: variant_key fix for wildtype projects must be in growth_rate_extract.py first
+# # acetate / basal / succinate: seeds 100, 101
+# python reading/growth_rate_extract.py \
+#     --all --save-timeseries \
+#     --projects wildtype_acetate wildtype_basal wildtype_succinate \
+#     --suffix wildtype_3media_seed100_101 \
+#     --lineage-seeds 100 101
+
+# # with_aa: seeds 1, 2 (seed 101 crashed in wildtype_with_aa)
+# python reading/growth_rate_extract.py \
+#     --all --save-timeseries \
+#     --projects wildtype_with_aa_s1-5 \
+#     --suffix wildtype_with_aa_seed1_2 \
+#     --lineage-seeds 1 2
 
 # echo "Preprocessing growth rate to fold change data (all parquet files)..."
 # GENE_LIST=/user/home/il22158/work/vEcoli/reading/imported/Single_KO_RNA_names.txt

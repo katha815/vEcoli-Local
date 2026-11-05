@@ -301,7 +301,9 @@ def main():
     projects = []
     for proj_name in args.projects:
         # Determine variant key based on project name
-        if "media" in proj_name.lower() or "condition" in proj_name.lower():
+        if proj_name.lower().startswith("wildtype"):
+            variant_key = "null"  # wildtype metadata.json uses the "null" key
+        elif "media" in proj_name.lower() or "condition" in proj_name.lower():
             variant_key = "condition"
         else:
             variant_key = "gene_knockout"
