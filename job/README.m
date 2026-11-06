@@ -5,7 +5,3 @@ Usage:
     python job/write_for_new_job.py
 For each launch, a hash code will be generated, and the launcher command will be saved as well as 
 the associated simulation configuration.
-
-to-dos:
-The current write_for_new_job also saves the submit command for each job, but the recent saves are
-deleted due to concerns rasing about quota (file number restrictions).

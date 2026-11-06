@@ -57,38 +57,38 @@ nextflow -version
 #     --suffix gene_knockout_462KO_basal_operon_on_p5 --lineage-seeds 100 101
 
 #-----Customised Script-----#
-# Task 0 = baseline p1-p5; tasks 1-4 = one media each
-GENE_LIST="$WORK_DIR/reading/imported/Single_KO_RNA_names.txt"
-TARGETS=(baseline acetate succinate with_aa)
-target="${TARGETS[$SLURM_ARRAY_TASK_ID]}"
-echo "Task ${SLURM_ARRAY_TASK_ID}: ${target}"
+# Task 0 = baseline p1-p5; tasks 1-4 = one media each; this code need #SBATCH --array enabled
+# GENE_LIST="$WORK_DIR/reading/imported/Single_KO_RNA_names.txt"
+# TARGETS=(baseline acetate succinate with_aa no_oxygen)
+# target="${TARGETS[$SLURM_ARRAY_TASK_ID]}"
+# echo "Task ${SLURM_ARRAY_TASK_ID}: ${target}"
 
-if [[ "$target" == "baseline" ]]; then
-  projects=()
-  for p in 1 2 3 4 5; do
-    projects+=("gene_knockout_462KO_basal_operon_on_p${p}")
-  done
-  suffix="gene_knockout_462KO_basal"
-else
-  mapfile -t GENE_IDS < "$GENE_LIST"
-  projects=()
-  for gene in "${GENE_IDS[@]}"; do
-    projects+=("gene_knockout_${gene}_${target}")
-  done
-  echo "${target}: ${#projects[@]} KO projects listed (expected 462)"
-  suffix="gene_knockout_462KO_${target}"
-fi
+# if [[ "$target" == "baseline" ]]; then
+#   projects=()
+#   for p in 1 2 3 4 5; do
+#     projects+=("gene_knockout_462KO_basal_operon_on_p${p}")
+#   done
+#   suffix="gene_knockout_462KO_basal"
+# else
+#   mapfile -t GENE_IDS < "$GENE_LIST"
+#   projects=()
+#   for gene in "${GENE_IDS[@]}"; do
+#     projects+=("gene_knockout_${gene}_${target}")
+#   done
+#   echo "${target}: ${#projects[@]} KO projects listed (expected 462)"
+#   suffix="gene_knockout_462KO_${target}"
+# fi
 
-python reading/growth_rate_extract.py --all \
-  --projects "${projects[@]}" \
-  --lineage-seeds 100 101 \
-  --suffix "$suffix" \
-  --save-timeseries
+# python reading/growth_rate_extract.py --all \
+#   --projects "${projects[@]}" \
+#   --lineage-seeds 100 101 \
+#   --suffix "$suffix" \
+#   --save-timeseries
 
 # echo "Extracting wildtype growth rate for 4 media (2 seeds each)..."
 
 # # Sanity: variant_key fix for wildtype projects must be in growth_rate_extract.py first
-# # acetate / basal / succinate: seeds 100, 101
+# acetate / basal / succinate: seeds 100, 101
 # python reading/growth_rate_extract.py \
 #     --all --save-timeseries \
 #     --projects wildtype_acetate wildtype_basal wildtype_succinate \
