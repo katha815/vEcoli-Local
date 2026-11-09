@@ -91,6 +91,13 @@ def parse_args() -> argparse.Namespace:
             "  Workflow output: /user/home/il22158/work/vEcoli/out/<project>/nextflow/\n\n"
         ),
     )
+
+    parser.add_argument(
+        "--single_job",
+        action="store_true",
+        help="Submit all selected knockout variants and media in one Slurm job.",
+    )
+
     parser.add_argument(
         "--template-config",
         type=Path,
@@ -311,14 +318,24 @@ def build_config(
     job: JobSpec,
     generations: int,
     lineage_seeds: List[int],
+    genes: Optional[List[str]] = None,
+    cpus: Optional[int] = None,
 ) -> Dict[str, object]:
     config = json.loads(json.dumps(template_config))
+    if cpus is not None:
+        config.setdefault("parca_options", {})["cpus"] = cpus
     config["experiment_id"] = job.project
     config["condition"] = job.media
     config["generations"] = generations
     config["lineage_seed"] = lineage_seeds[0]
     config["n_init_sims"] = len(range(lineage_seeds[0], lineage_seeds[-1] + 1))
-    if job.gene is None:
+    if genes is not None:
+        config["variants"] = {
+            "gene_knockout": {
+                "genes_to_knockout": {"value": [[gene] for gene in genes]}
+            }
+        }
+    elif job.gene is None:
         config["variants"] = {}
         config["skip_baseline"] = False
     else:
@@ -331,33 +348,43 @@ def build_config(
 
 
 def build_slurm_script(
-    job: JobSpec,
-    config_path: Path,
+    jobs_and_configs: List[Tuple[JobSpec, Path]],
     args: argparse.Namespace,
     slurm_log_dir: Path,
 ) -> str:
-    generation_args = " ".join(
-        str(generation)
-        for generation in range(job.generation_start, job.generation_end + 1)
-    )
-    growth_rate_extraction = ""
-    if args.extract_growth_rate:
-        growth_rate_extraction = f"""
-python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py \\
-    --all \\
-    --projects {job.project} \\
-    --save-timeseries \\
-    --suffix {job.project} \\
-    --lineage-seeds {" ".join(str(seed) for seed in args.lineage_seeds)} \\
-    --generations {generation_args}
-"""
+    job_name = jobs_and_configs[0][0].project
+
+    commands = []
+    for job, config_path in jobs_and_configs:
+        commands.append(
+            f"python runscripts/workflow.py --config {shlex.quote(str(config_path))}"
+        )
+
+        if args.extract_growth_rate:
+            generation_args = " ".join(
+                str(generation)
+                for generation in range(job.generation_start, job.generation_end + 1)
+            )
+            seed_args = " ".join(
+                str(seed)
+                for seed in range(args.lineage_seeds[0], args.lineage_seeds[-1] + 1)
+            )
+            project = shlex.quote(job.project)
+            commands.append(
+                "python /user/home/il22158/work/vEcoli/reading/growth_rate_extract.py "
+                f"--projects {project} --save-timeseries --suffix {project} "
+                f"--lineage-seeds {seed_args} --generations {generation_args}"
+            )
+
+    workflow_commands = "\n\n".join(commands)
+
     return f"""#!/bin/bash
-#SBATCH --job-name={job.project}
+#SBATCH --job-name={job_name}
 #SBATCH --partition={args.partition}
 #SBATCH --time={args.time}
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account={args.account}
-#SBATCH --output={slurm_log_dir}/{job.project}.%j.out
+#SBATCH --output={slurm_log_dir}/{job_name}.%j.out
 #SBATCH --mem={args.mem}
 #SBATCH --cpus-per-task={args.cpus_per_task}
 
@@ -370,11 +397,9 @@ source "$WORK_DIR/.venv/bin/activate"
 
 module load languages/java-sdk/22.0.2 openssh/9.7p1-uyheegq git
 module list
-
 nextflow -version
 
-python runscripts/workflow.py --config {config_path}
-{growth_rate_extraction}
+{workflow_commands}
 """
 
 
@@ -385,7 +410,7 @@ def submit_job(script_path: Path) -> None:
 def main() -> None:
     args = parse_args()
     launcher_command = " ".join(shlex.quote(arg) for arg in sys.argv)
-    launch_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    launch_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
 
     if len(args.lineage_seeds) == 1:
         first = last = args.lineage_seeds[0]
@@ -431,34 +456,104 @@ def main() -> None:
 
     submission_records = []
     script_paths = []
-    for gene in genes:
+    jobs_and_configs = []
+
+    if args.single_job:
+        if len(set(args.media)) != len(args.media):
+            raise ValueError("Do not specify the same medium more than once.")
+        if args.project_name and len(args.media) != 1:
+            raise ValueError("--project-name requires exactly one medium.")
+        if args.simulation_type == "knockout" and not genes:
+            raise ValueError("The gene list is empty.")
+        if (
+            template_config.get("sherlock") is not None
+            or template_config.get("gcloud") is not None
+        ):
+            raise ValueError(
+                "--single_job requires the standard local Nextflow profile."
+            )
+
         for media in args.media:
-            job = make_job_spec(
-                gene, media, media_windows, args.project_name, args.project_suffix
-            )
-            config = build_config(
-                template_config, job, args.generations, args.lineage_seeds
-            )
+            if args.simulation_type == "knockout":
+                project = (
+                    args.project_name
+                    or f"gene_knockout_batch_{media}{args.project_suffix}"
+                )
+                job = make_job_spec(genes[0], media, media_windows, project)
+                config = build_config(
+                    template_config,
+                    job,
+                    args.generations,
+                    args.lineage_seeds,
+                    genes=genes,
+                    cpus=args.cpus_per_task,
+                )
+            else:
+                job = make_job_spec(
+                    None,
+                    media,
+                    media_windows,
+                    args.project_name,
+                    args.project_suffix,
+                )
+                config = build_config(
+                    template_config,
+                    job,
+                    args.generations,
+                    args.lineage_seeds,
+                    cpus=args.cpus_per_task,
+                )
 
             config_path = configs_dir / f"{job.project}.json"
             config_path.write_text(
                 json.dumps(config, indent=2) + "\n", encoding="utf-8"
             )
+            jobs_and_configs.append((job, config_path))
 
-            script_path = scripts_dir / f"{job.project}.sh"
-            slurm_script = build_slurm_script(
-                job, config_path, args, args.slurm_log_dir
-            )
-            script_path.write_text(slurm_script, encoding="utf-8")
+        script_path = scripts_dir / "single_job.sh"
+        slurm_script = build_slurm_script(jobs_and_configs, args, args.slurm_log_dir)
+        script_path.write_text(slurm_script, encoding="utf-8")
+        submission_records.append(
+            ("single_job", f"sbatch {shlex.quote(str(script_path))}", slurm_script)
+        )
+        script_paths.append(script_path)
 
-            submission_records.append(
-                (
-                    job.project,
-                    f"sbatch {shlex.quote(str(script_path))}",
-                    slurm_script,
+    else:
+        for gene in genes:
+            for media in args.media:
+                job = make_job_spec(
+                    gene,
+                    media,
+                    media_windows,
+                    args.project_name,
+                    args.project_suffix,
                 )
-            )
-            script_paths.append(script_path)
+                config = build_config(
+                    template_config,
+                    job,
+                    args.generations,
+                    args.lineage_seeds,
+                    cpus=args.cpus_per_task,
+                )
+
+                config_path = configs_dir / f"{job.project}.json"
+                config_path.write_text(
+                    json.dumps(config, indent=2) + "\n", encoding="utf-8"
+                )
+
+                script_path = scripts_dir / f"{job.project}.sh"
+                slurm_script = build_slurm_script(
+                    [(job, config_path)], args, args.slurm_log_dir
+                )
+                script_path.write_text(slurm_script, encoding="utf-8")
+                submission_records.append(
+                    (
+                        job.project,
+                        f"sbatch {shlex.quote(str(script_path))}",
+                        slurm_script,
+                    )
+                )
+                script_paths.append(script_path)
 
     manifest_path = run_dir / "submission_manifest.txt"
     with manifest_path.open("w", encoding="utf-8") as handle:
