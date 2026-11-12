@@ -1,11 +1,11 @@
 #!/bin/bash
 
-#SBATCH --job-name=growth_rate_extract_462KO_4media
+#SBATCH --job-name=growth_rate_extract_errored_round1
 #SBATCH --partition=compute
 #SBATCH --time=14-00:00:00
 #SBATCH --chdir=/user/home/il22158
 #SBATCH --account=emat024603
-#SBATCH --output=/user/home/il22158/work/slurm_logs/growth_rate_extract_462KO_4media.%j.out
+#SBATCH --output=/user/home/il22158/work/slurm_logs/growth_rate_extract_errored_round1.%j.out
 #SBATCH --mem=20G
 #SBATCH --cpus-per-task=4
 
@@ -33,6 +33,9 @@ nextflow -version
 # echo "Snapshot for job ${SLURM_JOB_ID}"
 
 # === JOB EXECUTION ===
+echo "Extract growth rate with pre-defined suffixes - all errored simulaion resubmitted in round 1"
+python /user/home/il22158/work/vEcoli/reading/extract_growth_rate_with_suffix.py
+
 # echo "Starting downsampling of history parquet files again to make it end in 1/20 size..."
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_non_metabolic_seed100/history --n 20 
 # python reading/downsample_history.py --dir /user/home/il22158/work/vEcoli/out/gene_ko_metabolic_seed100/history --n 20 

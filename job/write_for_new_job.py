@@ -19,6 +19,7 @@ import re
 import shlex
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple
@@ -568,7 +569,9 @@ def main() -> None:
     if args.dry_run:
         print(f"Dry run only; no jobs submitted. Scripts are under {scripts_dir}")
     else:
-        for script_path in script_paths:
+        for i, script_path in enumerate(script_paths):
+            if i:
+                time.sleep(1)  # stagger submissions to avoid Nextflow lock errors
             submit_job(script_path)
         print(f"Submitted {len(script_paths)} Slurm jobs")
 

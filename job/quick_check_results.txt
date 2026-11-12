@@ -1,0 +1,12 @@
+(vecoli) [il22158@bp1-login03(BluePebble) work]$ /user/home/il22158/work/vEcoli/.venv/bin/python /user/home/il22158/work/vEcoli/reading/nextflow_fail_check.py
+gene_knockout_EG10652_acetate_errored: missing non-empty .cPickle file
+gene_knockout_EG10919_acetate_errored: missing non-empty .cPickle file
+gene_knockout_EG10965_with_aa_errored_overlap_s2: missing non-empty .cPickle file
+gene_knockout_EG10999_succinate_errored: missing non-empty .cPickle file
+gene_knockout_EG11005_acetate_errored: missing non-empty .cPickle file
+gene_knockout_EG11039_succinate_errored: missing non-empty .cPickle file
+gene_knockout_EG11040_with_aa_errored_overlap_s2: missing non-empty .cPickle file
+gene_knockout_EG11226_succinate_errored: missing non-empty .cPickle file
+gene_knockout_G7665_acetate_errored: missing non-empty .cPickle file
+gene_knockout_G7865_with_aa_errored_no_overlap: missing non-empty .cPickle file
+Total missing non-empty .cPickle files: 10
