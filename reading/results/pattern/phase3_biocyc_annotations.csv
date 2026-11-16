@@ -1,0 +1,16 @@
+gene_id,gene_name,product_ids,product_names,pathway_ids,pathway_names,biocyc_url
+EG10196,cysS,CYSS-MONOMER,cysteine&mdash;tRNA ligase,TRNA-CHARGING-PWY,tRNA charging,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10196
+EG10408,glyA,GLYOHMETRANS-MONOMER; GLYOHMETRANS-CPLX,serine hydroxymethyltransferase; serine hydroxymethyltransferase,PWY0-1535; GLYSYN-PWY; PWY-2161; 1CMET2-PWY; PWY0-1608,D-serine degradation; glycine biosynthesis I; folate polyglutamylation; folate transformations III (<i>E. coli</i>); glycine degradation,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10408
+EG10453,hisS,HISS-MONOMER; HISS-CPLX,histidine&mdash;tRNA ligase; ,TRNA-CHARGING-PWY,tRNA charging,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10453
+EG10492,ileS,ILES-MONOMER,isoleucine&mdash;tRNA ligase,TRNA-CHARGING-PWY,tRNA charging,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10492
+EG10581,metA,HOMSUCTRAN-MONOMER; HOMSUCTRAN-CPLX,homoserine <i>O</i>-succinyltransferase; ,HOMOSER-METSYN-PWY,L-methionine biosynthesis I,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10581
+EG10586,metG,METG-MONOMER; METG-CPLX,methionine&mdash;tRNA ligase; methionine&mdash;tRNA ligase,TRNA-CHARGING-PWY,tRNA charging,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10586
+EG10755,ppa,INORGPYROPHOSPHAT-MONOMER; CPLX0-243,inorganic pyrophosphatase; inorganic pyrophosphatase,PWY-7805,(aminomethyl)phosphonate degradation,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10755
+EG10770,proS,PROS-MONOMER; PROS-CPLX,proline&mdash;tRNA ligase; proline&mdash;tRNA ligase,TRNA-CHARGING-PWY,tRNA charging,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10770
+EG10774,prs,PRPPSYN-MONOMER; CPLX0-8299,ribose-phosphate diphosphokinase; ,PWY0-662,PRPP biosynthesis,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10774
+EG10810,pyrG,CTPSYN-MONOMER; CTPSYN-CPLX,CTP synthetase; CTP synthetase,PWY-7176,UTP and CTP <i>de novo</i> biosynthesis,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10810
+EG10965,gmk,GUANYL-KIN-MONOMER; GUANYL-KIN-CPLX,guanylate kinase; guanylate kinase,PWY-7221,guanosine ribonucleotides <i>de novo</i> biosynthesis,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG10965
+EG11030,trpS,TRPS-MONOMER; TRPS-CPLX,tryptophan&mdash;tRNA ligase; tryptophan&mdash;tRNA ligase,TRNA-CHARGING-PWY,tRNA charging,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG11030
+EG11112,aat,EG11112-MONOMER,leucyl/phenylalanyl-tRNA&mdash;protein transferase,PWY-7801,N-end rule pathway I (prokaryotic),https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG11112
+EG11539,pyrH,UMPKI-MONOMER; UMPKI-CPLX,UMP kinase; UMP kinase,PWY-7176,UTP and CTP <i>de novo</i> biosynthesis,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=EG11539
+G7454,csdA,G7454-MONOMER; CPLX0-7838,cysteine sulfinate desulfinase; cysteine sulfinate desulfinase,,,https://biocyc.org/ECOLI/NEW-IMAGE?type=GENE&object=G7454

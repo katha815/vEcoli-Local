@@ -1,0 +1,5 @@
+medium,observed KO labels,observed KO/seed pairs,KOs with 1 seed,KOs with 2 seeds,KOs with 3+ seeds,baseline runs in summary,observed total including baseline
+basal,462,924,0,462,0,2,926
+acetate,462,924,0,462,0,2,926
+succinate,462,924,0,462,0,2,926
+aa,462,924,0,462,0,2,926

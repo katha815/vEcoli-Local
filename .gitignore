@@ -16,7 +16,6 @@ out/
 
 # Customised #
 data/
-reading/results/
 surrogate/results/
 surrogate/train_data/
 

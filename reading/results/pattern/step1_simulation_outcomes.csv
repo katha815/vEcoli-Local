@@ -1,0 +1,5 @@
+medium,valid_runs,invalid_runs,valid_reaching_target,valid_below_target,total_runs,valid_run_fraction
+aa,598,328,555,43,926,0.6457883369330454
+acetate,487,439,400,87,926,0.5259179265658748
+basal,617,309,608,9,926,0.6663066954643628
+succinate,598,328,485,113,926,0.6457883369330454
